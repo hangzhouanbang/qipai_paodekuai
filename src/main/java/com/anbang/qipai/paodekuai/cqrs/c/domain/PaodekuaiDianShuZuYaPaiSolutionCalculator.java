@@ -1,13 +1,8 @@
 package com.anbang.qipai.paodekuai.cqrs.c.domain;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import com.dml.paodekuai.pai.dianshuzu.FeijiDianShuZu;
-import com.dml.paodekuai.pai.dianshuzu.SandaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.*;
 import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
@@ -20,8 +15,6 @@ import com.dml.puke.wanfa.dianshu.dianshuzu.ShunziDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.DanGeDianShuZuComparator;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.LianXuDianShuZuComparator;
-import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
-import com.dml.paodekuai.pai.dianshuzu.PaiXing;
 import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
 import com.dml.paodekuai.player.action.da.solution.DianShuZuYaPaiSolutionCalculator;
 
@@ -32,7 +25,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 	private DaipaiComparator daipaiComparator;
 
 	@Override
-	public Map<String, DaPaiDianShuSolution> calculate(DianShuZu beiYaDianShuZu, int[] dianShuAmountArray) {
+	public Map<String, DaPaiDianShuSolution> calculate(DianShuZu beiYaDianShuZu, int[] dianShuAmountArray, boolean baodan) {
 		int[] dianShuAmount = dianShuAmountArray.clone();
 		Map<String, DaPaiDianShuSolution> yaPaiSolutionCandidates = new HashMap<>();
 		Set<DaPaiDianShuSolution> solutionSet = new HashSet<>();
@@ -40,8 +33,14 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 		if (beiYaDianShuZu instanceof DanzhangDianShuZu) {
 			DanzhangDianShuZu beiYaDanzhangDianShuZu = (DanzhangDianShuZu) beiYaDianShuZu;
 			// 大小王做单张牌打出必定是作为本身的牌的点数
-			List<DanzhangDianShuZu> danzhangDianShuZuList = DianShuZuCalculator
-					.calculateDanzhangDianShuZu(dianShuAmount);
+
+			List<DanzhangDianShuZu> danzhangDianShuZuList;
+			if (baodan) {
+				danzhangDianShuZuList = PaodekuaiDianShuZuGenerator.largestDanzhangDianshuzu(dianShuAmount);
+			} else {
+				danzhangDianShuZuList = DianShuZuCalculator.calculateDanzhangDianShuZu(dianShuAmount);
+			}
+
 			for (DanzhangDianShuZu danzhangDianShuZu : danzhangDianShuZuList) {
 				try {
 					if (danGeDianShuZuComparator.compare(danzhangDianShuZu, beiYaDanzhangDianShuZu) > 0) {
