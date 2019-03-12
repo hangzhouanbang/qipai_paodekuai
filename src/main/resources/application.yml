@@ -1,0 +1,131 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/qipai_paodekuai
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          zk-nodes: localhost:2181
+          minPartitionCount: 1
+          autoCreateTopics: true
+          autoAddPartitions: false
+        bindings:
+          memberGoldsAccounting:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          wenzhouShuangkouGame:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          wenzhouShuangkouResult:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          wisecrack:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          watchRecord:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+      bindings:
+        memberGoldsAccounting:
+          destination: memberGoldsAccounting
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        wenzhouShuangkouGame:
+          destination: wenzhouShuangkouGame
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        wenzhouShuangkouResult:
+          destination: wenzhouShuangkouResult
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        members:
+          destination: members
+          group: qipai-paodekuai
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        memberGolds:
+          destination: memberGolds
+          group: qipai-paodekuai
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wenzhouShuangkouGameRoom:
+          destination: wenzhouShuangkouGameRoom
+          group: qipai-paodekuai
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wisecrack:
+          destination: wisecrack
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        watchRecord:
+          destination: watchRecord
+          contentType: application/json
+          producer:
+            partitionCount: 1
+  application:
+    name: qipai-admin-facade
+server:
+  port: 2006
+  tomcat:
+    access-log-enabled: true
+    access-log-pattern: '%a %h %A %p %U %t %H %m %r %s %b %D'
+    basedir: ./
+  #compression:
+    #enabled: true
+    #mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    #min-response-size: 1024
+
+filepath:
+  snapshotFileBasePath: /data/app/qipai_paodekuai/server1/snapshot
+  jFileBasePath: /data/app/qipai_paodekuai/server1/journal
+  
+logging:
+  config: classpath:spring-log.xml
