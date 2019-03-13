@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.anbang.qipai.paodekuai.cqrs.c.domain.PukeGameValueObject;
-import com.anbang.qipai.paodekuai.cqrs.c.domain.wanfa.ChaPai;
-import com.anbang.qipai.paodekuai.cqrs.c.domain.wanfa.FaPai;
 import com.anbang.qipai.paodekuai.plan.bean.PlayerInfo;
 import com.dml.mpgame.game.GamePlayerValueObject;
 import com.dml.mpgame.game.GameState;
@@ -17,11 +15,11 @@ public class PukeGameDbo {
 	private int panshu;
 	private int renshu;
 	private OptionalPlay optionalPlay;
-	private boolean chaodi;
+//	private boolean chaodi;
 	private boolean shuangming;
-	private boolean fengding;
-	private ChaPai chapai;
-	private FaPai fapai;
+//	private boolean fengding;
+//	private ChaPai chapai;
+//	private FaPai fapai;
 	private GameState state;// 原来是 waitingStart, playing, waitingNextPan, finished
 	private int panNo;
 	private List<PukeGamePlayerDbo> players;
@@ -97,44 +95,12 @@ public class PukeGameDbo {
 		this.optionalPlay = optionalPlay;
 	}
 
-	public boolean isChaodi() {
-		return chaodi;
-	}
-
-	public void setChaodi(boolean chaodi) {
-		this.chaodi = chaodi;
-	}
-
 	public boolean isShuangming() {
 		return shuangming;
 	}
 
 	public void setShuangming(boolean shuangming) {
 		this.shuangming = shuangming;
-	}
-
-	public boolean isFengding() {
-		return fengding;
-	}
-
-	public void setFengding(boolean fengding) {
-		this.fengding = fengding;
-	}
-
-	public ChaPai getChapai() {
-		return chapai;
-	}
-
-	public void setChapai(ChaPai chapai) {
-		this.chapai = chapai;
-	}
-
-	public FaPai getFapai() {
-		return fapai;
-	}
-
-	public void setFapai(FaPai fapai) {
-		this.fapai = fapai;
 	}
 
 	public GameState getState() {

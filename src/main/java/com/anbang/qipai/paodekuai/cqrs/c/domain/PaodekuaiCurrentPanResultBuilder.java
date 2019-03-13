@@ -37,9 +37,9 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 		}
 
 		//玩家炸弹数
-		BoomCountDaActionStatisticsListener wenzhouShuangkouListener = ju.getActionStatisticsListenerManager()
+		BoomCountDaActionStatisticsListener paodekuaiListener = ju.getActionStatisticsListenerManager()
 				.findDaListener(BoomCountDaActionStatisticsListener.class);
-		Map<String, Integer> boomMap = wenzhouShuangkouListener.getPlayerzhadanshuMap();
+		Map<String, Integer> boomMap = paodekuaiListener.getPlayerzhadanshuMap();
 
 //		List<String> noPaiPlayerIdList = currentPan.getNoPaiPlayerIdList();
 		List<String> playerIds = currentPan.findAllPlayerId();

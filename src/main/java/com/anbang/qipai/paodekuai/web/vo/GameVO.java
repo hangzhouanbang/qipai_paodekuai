@@ -3,8 +3,6 @@ package com.anbang.qipai.paodekuai.web.vo;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.anbang.qipai.paodekuai.cqrs.c.domain.wanfa.ChaPai;
-import com.anbang.qipai.paodekuai.cqrs.c.domain.wanfa.FaPai;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameDbo;
 import com.dml.mpgame.game.Canceled;
 import com.dml.mpgame.game.Finished;
@@ -24,11 +22,11 @@ public class GameVO {
 	private int renshu;
 	private OptionalPlay optionalPlay;
 	// TODO: 2019/3/11  
-	private boolean chaodi;
-	private boolean shuangming;
-	private boolean fengding;
-	private ChaPai chapai;
-	private FaPai fapai;
+//	private boolean chaodi;
+//	private boolean shuangming;
+//	private boolean fengding;
+//	private ChaPai chapai;
+//	private FaPai fapai;
 	private int panNo;
 	private List<PukeGamePlayerVO> playerList;
 	private String state;
@@ -38,11 +36,6 @@ public class GameVO {
 		panshu = pukeGameDbo.getPanshu();
 		renshu = pukeGameDbo.getRenshu();
 		optionalPlay = pukeGameDbo.getOptionalPlay();
-		chaodi = pukeGameDbo.isChaodi();
-		shuangming = pukeGameDbo.isShuangming();
-		fengding = pukeGameDbo.isFengding();
-		chapai = pukeGameDbo.getChapai();
-		fapai = pukeGameDbo.getFapai();
 		playerList = new ArrayList<>();
 		pukeGameDbo.getPlayers().forEach((dbo) -> playerList.add(new PukeGamePlayerVO(dbo)));
 		panNo = pukeGameDbo.getPanNo();
@@ -101,46 +94,6 @@ public class GameVO {
 
 	public void setOptionalPlay(OptionalPlay optionalPlay) {
 		this.optionalPlay = optionalPlay;
-	}
-
-	public boolean isChaodi() {
-		return chaodi;
-	}
-
-	public void setChaodi(boolean chaodi) {
-		this.chaodi = chaodi;
-	}
-
-	public boolean isShuangming() {
-		return shuangming;
-	}
-
-	public void setShuangming(boolean shuangming) {
-		this.shuangming = shuangming;
-	}
-
-	public boolean isFengding() {
-		return fengding;
-	}
-
-	public void setFengding(boolean fengding) {
-		this.fengding = fengding;
-	}
-
-	public ChaPai getChapai() {
-		return chapai;
-	}
-
-	public void setChapai(ChaPai chapai) {
-		this.chapai = chapai;
-	}
-
-	public FaPai getFapai() {
-		return fapai;
-	}
-
-	public void setFapai(FaPai fapai) {
-		this.fapai = fapai;
 	}
 
 	public int getPanNo() {

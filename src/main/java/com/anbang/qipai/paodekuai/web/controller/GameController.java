@@ -14,7 +14,6 @@ import com.anbang.qipai.paodekuai.plan.service.PlayerInfoService;
 import com.anbang.qipai.paodekuai.utils.CommonVoUtil;
 import com.anbang.qipai.paodekuai.websocket.WatchQueryScope;
 import com.dml.mpgame.game.*;
-import com.dml.mpgame.game.watch.WatchRecord;
 import com.dml.mpgame.game.watch.Watcher;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import org.slf4j.Logger;
@@ -79,10 +78,10 @@ public class GameController {
 	private MemberGoldsMsgService memberGoldsMsgService;
 
 	@Autowired
-	private WenzhouShuangkouGameMsgService gameMsgService;
+	private PaodekuaiGameMsgService gameMsgService;
 
 	@Autowired
-	private WenzhouShuangkouResultMsgService wenzhouShuangkouResultMsgService;
+	private PaodekuaiResultMsgService paodekuaiResultMsgService;
 
 	@Autowired
 	private WiseCrackMsgServcie wiseCrackMsgServcie;
@@ -312,7 +311,7 @@ public class GameController {
 		if (juResultDbo != null) {
 			PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 			PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+			paodekuaiResultMsgService.recordJuResult(juResult);
 		}
 		if (pukeGameValueObject.getState().name().equals(FinishedByVote.name)
 				|| pukeGameValueObject.getState().name().equals(Canceled.name)) {
@@ -375,7 +374,7 @@ public class GameController {
 		if (juResultDbo != null) {
 			PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 			PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+			paodekuaiResultMsgService.recordJuResult(juResult);
 		}
 		if (pukeGameValueObject.getState().name().equals(FinishedByVote.name)
 				|| pukeGameValueObject.getState().name().equals(Canceled.name)) {
@@ -622,7 +621,7 @@ public class GameController {
 		if (juResultDbo != null) {
 			PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 			PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+			paodekuaiResultMsgService.recordJuResult(juResult);
 		}
 
 		if (pukeGameValueObject.getState().name().equals(FinishedByVote.name)
@@ -686,7 +685,7 @@ public class GameController {
 		if (juResultDbo != null) {
 			PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 			PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+			paodekuaiResultMsgService.recordJuResult(juResult);
 		}
 		if (pukeGameValueObject.getState().name().equals(FinishedByVote.name)
 				|| pukeGameValueObject.getState().name().equals(Canceled.name)) {
@@ -743,7 +742,7 @@ public class GameController {
 		if (juResultDbo != null) {
 			PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 			PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+			paodekuaiResultMsgService.recordJuResult(juResult);
 		}
 		if (pukeGameValueObject.getState().name().equals(FinishedByVote.name)
 				|| pukeGameValueObject.getState().name().equals(Canceled.name)) {

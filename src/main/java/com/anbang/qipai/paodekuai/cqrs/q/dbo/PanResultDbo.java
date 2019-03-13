@@ -12,7 +12,7 @@ public class PanResultDbo {
 	private String gameId;
 	private int panNo;
 	private boolean chaodi;
-	private List<WenzhouShuangkouPanPlayerResultDbo> playerResultList;
+	private List<PaodekuaiPanPlayerResultDbo> playerResultList;
 	private long finishTime;
 	private PanActionFrame panActionFrame;
 
@@ -25,7 +25,7 @@ public class PanResultDbo {
 		this.chaodi = panResult.isChaodi();
 		playerResultList = new ArrayList<>();
 		for (PaodekuaiPanPlayerResult playerResult : panResult.getPanPlayerResultList()) {
-			WenzhouShuangkouPanPlayerResultDbo dbo = new WenzhouShuangkouPanPlayerResultDbo();
+			PaodekuaiPanPlayerResultDbo dbo = new PaodekuaiPanPlayerResultDbo();
 			dbo.setPlayerId(playerResult.getPlayerId());
 			dbo.setPlayerResult(playerResult);
 			dbo.setPlayer(panResult.findPlayer(playerResult.getPlayerId()));
@@ -66,11 +66,11 @@ public class PanResultDbo {
 		this.chaodi = chaodi;
 	}
 
-	public List<WenzhouShuangkouPanPlayerResultDbo> getPlayerResultList() {
+	public List<PaodekuaiPanPlayerResultDbo> getPlayerResultList() {
 		return playerResultList;
 	}
 
-	public void setPlayerResultList(List<WenzhouShuangkouPanPlayerResultDbo> playerResultList) {
+	public void setPlayerResultList(List<PaodekuaiPanPlayerResultDbo> playerResultList) {
 		this.playerResultList = playerResultList;
 	}
 

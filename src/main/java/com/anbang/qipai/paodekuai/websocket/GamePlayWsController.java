@@ -24,8 +24,8 @@ import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.service.PukeGameQueryService;
 import com.anbang.qipai.paodekuai.cqrs.q.service.PukePlayQueryService;
 import com.anbang.qipai.paodekuai.msg.msjobj.PukeHistoricalJuResult;
-import com.anbang.qipai.paodekuai.msg.service.WenzhouShuangkouGameMsgService;
-import com.anbang.qipai.paodekuai.msg.service.WenzhouShuangkouResultMsgService;
+import com.anbang.qipai.paodekuai.msg.service.PaodekuaiGameMsgService;
+import com.anbang.qipai.paodekuai.msg.service.PaodekuaiResultMsgService;
 import com.dml.mpgame.game.Canceled;
 import com.dml.mpgame.game.Finished;
 import com.dml.mpgame.game.GameState;
@@ -51,10 +51,10 @@ public class GamePlayWsController extends TextWebSocketHandler {
 	private PukePlayQueryService pukePlayQueryService;
 
 	@Autowired
-	private WenzhouShuangkouGameMsgService gameMsgService;
+	private PaodekuaiGameMsgService gameMsgService;
 
 	@Autowired
-	private WenzhouShuangkouResultMsgService wenzhouShuangkouResultMsgService;
+	private PaodekuaiResultMsgService paodekuaiResultMsgService;
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -107,7 +107,7 @@ public class GamePlayWsController extends TextWebSocketHandler {
 				if (juResultDbo != null) {
 					PukeGameDbo pukeGameDbo = pukeGameQueryService.findPukeGameDboById(gameId);
 					PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-					wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+					paodekuaiResultMsgService.recordJuResult(juResult);
 				}
 				gameMsgService.gameFinished(gameId);
 			}

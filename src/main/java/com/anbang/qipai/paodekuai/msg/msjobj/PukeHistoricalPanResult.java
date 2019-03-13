@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PanResultDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameDbo;
-import com.anbang.qipai.paodekuai.cqrs.q.dbo.WenzhouShuangkouPanPlayerResultDbo;
+import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 
 public class PukeHistoricalPanResult {
 
@@ -22,7 +22,7 @@ public class PukeHistoricalPanResult {
 	}
 
 	public PukeHistoricalPanResult(PanResultDbo panResultDbo, PukeGameDbo pukeGameDbo) {
-		List<WenzhouShuangkouPanPlayerResultDbo> list = panResultDbo.getPlayerResultList();
+		List<PaodekuaiPanPlayerResultDbo> list = panResultDbo.getPlayerResultList();
 		if (list != null) {
 			playerResultList = new ArrayList<>(list.size());
 			list.forEach((panPlayerResult) -> playerResultList.add(new PaodekuaiPanPlayerResultMO(

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PanResultDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameDbo;
-import com.anbang.qipai.paodekuai.cqrs.q.dbo.WenzhouShuangkouPanPlayerResultDbo;
+import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 import com.dml.paodekuai.player.PaodekuaiPlayerValueObject;
 
 public class PanResultVO {
@@ -25,21 +25,21 @@ public class PanResultVO {
 	}
 
 	public PanResultVO(PanResultDbo panResultDbo, PukeGameDbo pukeGameDbo) {
-		List<WenzhouShuangkouPanPlayerResultDbo> list = panResultDbo.getPlayerResultList();
+		List<PaodekuaiPanPlayerResultDbo> list = panResultDbo.getPlayerResultList();
 		List<PaodekuaiPlayerValueObject> players = panResultDbo.getPanActionFrame().getPanAfterAction()
-				.getShuangkouPlayerList();
+				.getPaodekuaiPlayerList();
 		if (list != null) {
 			playerResultList = new ArrayList<>(list.size());
 			list.forEach((panPlayerResult) -> {
-				PaodekuaiPlayerValueObject shuangkouPlayer = null;
+				PaodekuaiPlayerValueObject paodekuaiPlayer = null;
 				for (PaodekuaiPlayerValueObject player : players) {
 					if (player.getId().equals(panPlayerResult.getPlayerId())) {
-						shuangkouPlayer = player;
+						paodekuaiPlayer = player;
 						break;
 					}
 				}
 				playerResultList.add(new PaodekuaiPanPlayerResultVO(
-						pukeGameDbo.findPlayer(panPlayerResult.getPlayerId()), panPlayerResult, shuangkouPlayer));
+						pukeGameDbo.findPlayer(panPlayerResult.getPlayerId()), panPlayerResult, paodekuaiPlayer));
 			});
 		}
 		chaodi = panResultDbo.isChaodi();

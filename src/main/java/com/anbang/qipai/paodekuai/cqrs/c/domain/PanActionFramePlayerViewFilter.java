@@ -20,15 +20,15 @@ public class PanActionFramePlayerViewFilter {
 		pan.getPaiListValueObject().setPaiList(null);
 		Position duijiaPosition = null;
 		PaodekuaiPlayerValueObject filterPlayer = null;
-		for (PaodekuaiPlayerValueObject player : pan.getShuangkouPlayerList()) {
+		for (PaodekuaiPlayerValueObject player : pan.getPaodekuaiPlayerList()) {
 			if (player.getId().equals(playerId)) {// 是自己
 				filterPlayer = player;
 				duijiaPosition = PositionUtil.nextPositionClockwise(player.getPosition());
 				duijiaPosition = PositionUtil.nextPositionClockwise(duijiaPosition);
 			}
 		}
-		if (pan.getShuangkouPlayerList().size() > 2) {
-			for (PaodekuaiPlayerValueObject player : pan.getShuangkouPlayerList()) {
+		if (pan.getPaodekuaiPlayerList().size() > 2) {
+			for (PaodekuaiPlayerValueObject player : pan.getPaodekuaiPlayerList()) {
 				if (player.getId().equals(playerId) || (player.getPosition().equals(duijiaPosition) && shuangming)
 						|| (player.getPosition().equals(duijiaPosition) && filterPlayer.getTotalShoupai() == 0)) {// 是自己或者对家,或者自己出完牌可以看到对家牌
 
@@ -42,7 +42,7 @@ public class PanActionFramePlayerViewFilter {
 				}
 			}
 		} else {
-			for (PaodekuaiPlayerValueObject player : pan.getShuangkouPlayerList()) {
+			for (PaodekuaiPlayerValueObject player : pan.getPaodekuaiPlayerList()) {
 				if (player.getId().equals(playerId)) {// 是自己
 					// 什么都不过滤，全要看
 				} else {// 是其他玩家

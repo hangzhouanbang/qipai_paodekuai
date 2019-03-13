@@ -1,11 +1,11 @@
 package com.anbang.qipai.paodekuai.web.vo;
 
 import com.dml.paodekuai.pan.PanActionFrame;
-import com.dml.paodekuai.player.action.ShuangkouPlayerAction;
+import com.dml.paodekuai.player.action.PaodekuaiPlayerAction;
 
 public class PanActionFrameVO {
 	private int no;
-	private ShuangkouPlayerAction action;
+	private PaodekuaiPlayerAction action;
 	private PanValueObjectVO panAfterAction;
 	private long actionTime;
 
@@ -28,11 +28,11 @@ public class PanActionFrameVO {
 		this.no = no;
 	}
 
-	public ShuangkouPlayerAction getAction() {
+	public PaodekuaiPlayerAction getAction() {
 		return action;
 	}
 
-	public void setAction(ShuangkouPlayerAction action) {
+	public void setAction(PaodekuaiPlayerAction action) {
 		this.action = action;
 	}
 

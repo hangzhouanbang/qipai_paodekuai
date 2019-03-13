@@ -23,7 +23,7 @@ spring:
                   ms: 5
                 batch:
                   size: 16384
-          wenzhouShuangkouGame:
+          paodekuaiGame:
             producer:
               configuration:
                 request:
@@ -33,7 +33,7 @@ spring:
                   ms: 5
                 batch:
                   size: 16384
-          wenzhouShuangkouResult:
+          paodekuaiResult:
             producer:
               configuration:
                 request:
@@ -69,13 +69,13 @@ spring:
           contentType: application/json
           producer:
             partitionCount: 1
-        wenzhouShuangkouGame:
-          destination: wenzhouShuangkouGame
+        paodekuaiGame:
+          destination: paodekuaiGame
           contentType: application/json
           producer:
             partitionCount: 1
-        wenzhouShuangkouResult:
-          destination: wenzhouShuangkouResult
+        paodekuaiResult:
+          destination: paodekuaiResult
           contentType: application/json
           producer:
             partitionCount: 1
@@ -93,8 +93,8 @@ spring:
             concurrency: 1
             partitioned: false
           contentType: application/json
-        wenzhouShuangkouGameRoom:
-          destination: wenzhouShuangkouGameRoom
+        paodekuaiGameRoom:
+          destination: paodekuaiGameRoom
           group: qipai-paodekuai
           consumer:
             concurrency: 1
@@ -113,7 +113,7 @@ spring:
   application:
     name: qipai-admin-facade
 server:
-  port: 2006
+  port: 2007
   tomcat:
     access-log-enabled: true
     access-log-pattern: '%a %h %A %p %U %t %H %m %r %s %b %D'

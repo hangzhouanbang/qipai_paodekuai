@@ -3,14 +3,14 @@ package com.anbang.qipai.paodekuai.web.vo;
 import java.util.List;
 
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGamePlayerDbo;
-import com.anbang.qipai.paodekuai.cqrs.q.dbo.WenzhouShuangkouPanPlayerResultDbo;
+import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 import com.dml.paodekuai.player.PaodekuaiPlayerValueObject;
 
 public class PaodekuaiPanPlayerResultVO {
 	private String playerId;
 	private String nickname;
 	private String headimgurl;
-	private ShuangkouPlayerShoupaiVO allShoupai;
+	private PaodekuaiPlayerShoupaiVO allShoupai;
 //	private int xianshubeishu;
 //	private int gongxianfen;
 //	private int bufen;
@@ -22,27 +22,27 @@ public class PaodekuaiPanPlayerResultVO {
 	}
 
 	public PaodekuaiPanPlayerResultVO(PukeGamePlayerDbo playerDbo,
-									  WenzhouShuangkouPanPlayerResultDbo panPlayerResult, PaodekuaiPlayerValueObject shuangkouPlayerValueObject) {
+									  PaodekuaiPanPlayerResultDbo panPlayerResult, PaodekuaiPlayerValueObject paodekuaiPlayerValueObject) {
 		playerId = playerDbo.getPlayerId();
 		nickname = playerDbo.getNickname();
 		headimgurl = playerDbo.getHeadimgurl();
-		List<List<Integer>> shoupaiIdListForSortList = shuangkouPlayerValueObject.getShoupaiIdListForSortList();
+		List<List<Integer>> shoupaiIdListForSortList = paodekuaiPlayerValueObject.getShoupaiIdListForSortList();
 		if (shoupaiIdListForSortList == null || shoupaiIdListForSortList.isEmpty()) {
-			allShoupai = new ShuangkouPlayerShoupaiVO(shuangkouPlayerValueObject.getAllShoupai(),
-					shuangkouPlayerValueObject.getTotalShoupai(), null);
+			allShoupai = new PaodekuaiPlayerShoupaiVO(paodekuaiPlayerValueObject.getAllShoupai(),
+					paodekuaiPlayerValueObject.getTotalShoupai(), null);
 		} else {
-			allShoupai = new ShuangkouPlayerShoupaiVO(shuangkouPlayerValueObject.getAllShoupai(),
-					shuangkouPlayerValueObject.getTotalShoupai(), shoupaiIdListForSortList.get(0));
+			allShoupai = new PaodekuaiPlayerShoupaiVO(paodekuaiPlayerValueObject.getAllShoupai(),
+					paodekuaiPlayerValueObject.getTotalShoupai(), shoupaiIdListForSortList.get(0));
 		}
 		score = panPlayerResult.getPlayerResult().getScore();
 		totalScore = panPlayerResult.getPlayerResult().getTotalScore();
 	}
 
-	public ShuangkouPlayerShoupaiVO getAllShoupai() {
+	public PaodekuaiPlayerShoupaiVO getAllShoupai() {
 		return allShoupai;
 	}
 
-	public void setAllShoupai(ShuangkouPlayerShoupaiVO allShoupai) {
+	public void setAllShoupai(PaodekuaiPlayerShoupaiVO allShoupai) {
 		this.allShoupai = allShoupai;
 	}
 

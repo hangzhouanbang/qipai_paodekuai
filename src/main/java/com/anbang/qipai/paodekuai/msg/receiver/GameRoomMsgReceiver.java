@@ -21,7 +21,7 @@ public class GameRoomMsgReceiver {
 
 	private Gson gson = new Gson();
 
-	@StreamListener(GameRoomSink.WENZHOUSHUANGKOUGAMEROOM)
+	@StreamListener(GameRoomSink.PAODEKUAIGAMEROOM)
 	public void removeGameRoom(CommonMO mo) {
 		String msg = mo.getMsg();
 		String json = gson.toJson(mo.getData());

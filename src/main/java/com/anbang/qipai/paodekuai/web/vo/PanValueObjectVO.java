@@ -10,7 +10,7 @@ import com.dml.paodekuai.pan.PanValueObject;
 
 public class PanValueObjectVO {
 	private int no;
-	private List<ShuangkouPlayerValueObjectVO> shuangkouPlayerList;
+	private List<PaodekuaiPlayerValueObjectVO> paodekuaiPlayerList;
 	private PaiListValueObject paiListValueObject;
 	private List<DianShuZuPaiZu> dachuPaiZuList;
 	private Position actionPosition;
@@ -21,9 +21,9 @@ public class PanValueObjectVO {
 
 	public PanValueObjectVO(PanValueObject panValueObject) {
 		no = panValueObject.getNo();
-		shuangkouPlayerList = new ArrayList<>();
-		panValueObject.getShuangkouPlayerList().forEach(
-				(shuangkouPlayer) -> shuangkouPlayerList.add(new ShuangkouPlayerValueObjectVO(shuangkouPlayer)));
+		paodekuaiPlayerList = new ArrayList<>();
+		panValueObject.getPaodekuaiPlayerList().forEach(
+				(paodekuaiPlayer) -> paodekuaiPlayerList.add(new PaodekuaiPlayerValueObjectVO(paodekuaiPlayer)));
 		paiListValueObject = panValueObject.getPaiListValueObject();
 		dachuPaiZuList = panValueObject.getDachuPaiZuList();
 		actionPosition = panValueObject.getActionPosition();
@@ -38,12 +38,12 @@ public class PanValueObjectVO {
 		this.no = no;
 	}
 
-	public List<ShuangkouPlayerValueObjectVO> getShuangkouPlayerList() {
-		return shuangkouPlayerList;
+	public List<PaodekuaiPlayerValueObjectVO> getPaodekuaiPlayerList() {
+		return paodekuaiPlayerList;
 	}
 
-	public void setShuangkouPlayerList(List<ShuangkouPlayerValueObjectVO> shuangkouPlayerList) {
-		this.shuangkouPlayerList = shuangkouPlayerList;
+	public void setPaodekuaiPlayerList(List<PaodekuaiPlayerValueObjectVO> paodekuaiPlayerList) {
+		this.paodekuaiPlayerList = paodekuaiPlayerList;
 	}
 
 	public PaiListValueObject getPaiListValueObject() {

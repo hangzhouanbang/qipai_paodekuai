@@ -31,8 +31,8 @@ import com.anbang.qipai.paodekuai.cqrs.q.service.PukeGameQueryService;
 import com.anbang.qipai.paodekuai.cqrs.q.service.PukePlayQueryService;
 import com.anbang.qipai.paodekuai.msg.msjobj.PukeHistoricalJuResult;
 import com.anbang.qipai.paodekuai.msg.msjobj.PukeHistoricalPanResult;
-import com.anbang.qipai.paodekuai.msg.service.WenzhouShuangkouGameMsgService;
-import com.anbang.qipai.paodekuai.msg.service.WenzhouShuangkouResultMsgService;
+import com.anbang.qipai.paodekuai.msg.service.PaodekuaiGameMsgService;
+import com.anbang.qipai.paodekuai.msg.service.PaodekuaiResultMsgService;
 import com.anbang.qipai.paodekuai.web.vo.CommonVO;
 import com.anbang.qipai.paodekuai.web.vo.GameInfoVO;
 import com.anbang.qipai.paodekuai.web.vo.JuResultVO;
@@ -60,10 +60,10 @@ public class PukeController {
 	private PukeGameQueryService pukeGameQueryService;
 
 	@Autowired
-	private WenzhouShuangkouResultMsgService wenzhouShuangkouResultMsgService;
+	private PaodekuaiResultMsgService paodekuaiResultMsgService;
 
 	@Autowired
-	private WenzhouShuangkouGameMsgService gameMsgService;
+	private PaodekuaiGameMsgService gameMsgService;
 
 	@Autowired
 	private GamePlayWsNotifier wsNotifier;
@@ -195,7 +195,7 @@ public class PukeController {
 			if (pukeActionResult.getJuResult() != null) {// 局也结束了
 				JuResultDbo juResultDbo = pukePlayQueryService.findJuResultDbo(gameId);
 				PukeHistoricalJuResult juResult = new PukeHistoricalJuResult(juResultDbo, pukeGameDbo);
-				wenzhouShuangkouResultMsgService.recordJuResult(juResult);
+				paodekuaiResultMsgService.recordJuResult(juResult);
 
 				gameMsgService.gameFinished(gameId);
 				queryScopes.add(QueryScope.juResult.name());
@@ -208,7 +208,7 @@ public class PukeController {
 			PanResultDbo panResultDbo = pukePlayQueryService.findPanResultDbo(gameId,
 					pukeActionResult.getPanResult().getPan().getNo());
 			PukeHistoricalPanResult panResult = new PukeHistoricalPanResult(panResultDbo, pukeGameDbo);
-			wenzhouShuangkouResultMsgService.recordPanResult(panResult);
+			paodekuaiResultMsgService.recordPanResult(panResult);
 			gameMsgService.panFinished(pukeActionResult.getPukeGame(),
 					pukeActionResult.getPanActionFrame().getPanAfterAction());
 		}

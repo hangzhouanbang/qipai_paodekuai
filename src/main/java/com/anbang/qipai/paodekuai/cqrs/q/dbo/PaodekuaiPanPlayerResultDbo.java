@@ -3,7 +3,7 @@ package com.anbang.qipai.paodekuai.cqrs.q.dbo;
 import com.anbang.qipai.paodekuai.cqrs.c.domain.result.PaodekuaiPanPlayerResult;
 import com.dml.paodekuai.player.PaodekuaiPlayerValueObject;
 
-public class WenzhouShuangkouPanPlayerResultDbo {
+public class PaodekuaiPanPlayerResultDbo {
 
 	private String playerId;
 	private PaodekuaiPanPlayerResult playerResult;

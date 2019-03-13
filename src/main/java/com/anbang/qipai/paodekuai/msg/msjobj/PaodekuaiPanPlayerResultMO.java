@@ -1,7 +1,7 @@
 package com.anbang.qipai.paodekuai.msg.msjobj;
 
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGamePlayerDbo;
-import com.anbang.qipai.paodekuai.cqrs.q.dbo.WenzhouShuangkouPanPlayerResultDbo;
+import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 
 public class PaodekuaiPanPlayerResultMO {
 	private String playerId;
@@ -15,7 +15,7 @@ public class PaodekuaiPanPlayerResultMO {
 	}
 
 	public PaodekuaiPanPlayerResultMO(PukeGamePlayerDbo playerDbo,
-									  WenzhouShuangkouPanPlayerResultDbo panPlayerResult) {
+									  PaodekuaiPanPlayerResultDbo panPlayerResult) {
 		playerId = playerDbo.getPlayerId();
 		nickname = playerDbo.getNickname();
 		headimgurl = playerDbo.getHeadimgurl();
