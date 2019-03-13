@@ -5,6 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.dml.paodekuai.pai.dianshuzu.DaipaiDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.FeijiDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SandaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
 import com.dml.puke.pai.PukePai;
@@ -17,6 +21,7 @@ import com.dml.puke.wanfa.dianshu.dianshuzu.LiansanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.SanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ShunziDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.ZhadanComparator;
 import com.dml.paodekuai.player.action.da.YaPaiSolutionsTipsFilter;
 import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
@@ -24,8 +29,7 @@ import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
 import javax.crypto.spec.OAEPParameterSpec;
 
 /**
- * 提示顺序： 没有王牌代替的打法、不拆炸弹、同种类型、
- *
+ * 提示顺序： 没有王牌代替的打法、不拆炸弹、同种类型
  */
 public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilter {
 
@@ -36,24 +40,24 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 	@Override
 	public List<DaPaiDianShuSolution> filter(List<DaPaiDianShuSolution> YaPaiSolutions,
 			Map<Integer, PukePai> allShoupai, boolean yapai) {
-		//手牌转为点数数量数组
+		List<DaPaiDianShuSolution> filtedSolutionList = new LinkedList<>();
+		List<DaPaiDianShuSolution> noLaiziSolutionList = new ArrayList<>(YaPaiSolutions);
+
+		// 手牌转为点数数量数组
 		int[] dianshuCountArray = new int[15];
 		for (PukePai pukePai : allShoupai.values()) {
 			DianShu dianShu = pukePai.getPaiMian().dianShu();
 			dianshuCountArray[dianShu.ordinal()]++;
 		}
-		List<DaPaiDianShuSolution> filtedSolutionList = new LinkedList<>();
-		List<DaPaiDianShuSolution> noWangSolutionList = new ArrayList<>();
 
-
-		//取出可打牌中点数的最大炸弹，并排序（todo 实际上对于跑的快，只需排序即可）
+		// 取出可打牌中点数的最大炸弹，并排序（实际上对于跑的快，只需排序最大点数长度炸弹即可）
 		LinkedList<DaPaiDianShuSolution> danGeZhadanSolutionList = new LinkedList<>();
-		for (DaPaiDianShuSolution solution : noWangSolutionList) {
+		for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 			DianShuZu dianshuZu = solution.getDianShuZu();
 			if (dianshuZu instanceof DanGeZhadanDianShuZu) {
 				DanGeZhadanDianShuZu danGeZhadanDianShuZu1 = (DanGeZhadanDianShuZu) dianshuZu;
 				DianShu dianshu = danGeZhadanDianShuZu1.getDianShu();
-				if (danGeZhadanDianShuZu1.getSize() == dianshuCountArray[dianshu.ordinal()]) {//炸弹长度、该点数最大长度
+				if (danGeZhadanDianShuZu1.getSize() == dianshuCountArray[dianshu.ordinal()]) {//炸弹长度==该点数最大长度
 					if (danGeZhadanSolutionList.isEmpty()) {
 						danGeZhadanSolutionList.add(solution);
 					} else {
@@ -74,33 +78,13 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 				}
 			}
 		}
-		LinkedList<DaPaiDianShuSolution> zhadanSolutionList = new LinkedList<>();
-		for (DaPaiDianShuSolution zhadanSolution : danGeZhadanSolutionList) {
-			if (zhadanSolutionList.isEmpty()) {
-				zhadanSolutionList.add(zhadanSolution);
-			} else {
-				DanGeZhadanDianShuZu danGeZhadanDianShuZu1 = (DanGeZhadanDianShuZu) zhadanSolution.getDianShuZu();
-				int length = zhadanSolutionList.size();
-				for (int i = 0; i < length; i++) {
-					DanGeZhadanDianShuZu danGeZhadanDianShuZu2 = (DanGeZhadanDianShuZu) zhadanSolutionList.get(i)
-							.getDianShuZu();
-					if (danGeZhadanDianShuZu1.getSize() < danGeZhadanDianShuZu2.getSize()) {
-						zhadanSolutionList.add(i, zhadanSolution);
-						break;
-					}
-					if (i == length - 1) {
-						zhadanSolutionList.add(zhadanSolution);
-					}
-				}
-			}
-		}
 
 		LinkedList<DaPaiDianShuSolution> noWangDanzhangSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> noWangDuiziSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> noWangSanzhangSolutionList = new LinkedList<>();
+		LinkedList<DaPaiDianShuSolution> noWangSandaierSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> noWangShunziSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> noWangLianduiSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> noWangLiansanzhangSolutionList = new LinkedList<>();
+		LinkedList<DaPaiDianShuSolution> noWangFeijiSolutionList = new LinkedList<>();
 
 		// 单张至两张的单张
 		LinkedList<DaPaiDianShuSolution> noWangDanzhangYiShangSolutionList = new LinkedList<>();
@@ -109,33 +93,29 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		// 有三张的对子
 		LinkedList<DaPaiDianShuSolution> noWangDuiziYiShangSolutionList = new LinkedList<>();
 
-		LinkedList<DaPaiDianShuSolution> hasWangDanzhangSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> hasWangDuiziSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> hasWangSanzhangSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> hasWangShunziSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> hasWangLianduiSolutionList = new LinkedList<>();
-		LinkedList<DaPaiDianShuSolution> hasWangLiansanzhangSolutionList = new LinkedList<>();
 		if (!yapai) {
-			for (DaPaiDianShuSolution solution : noWangSolutionList) {
+			for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 				DianShuZu dianshuZu = solution.getDianShuZu();
-				// 三张
-				if (dianshuZu instanceof SanzhangDianShuZu) {
-					SanzhangDianShuZu sanzhangDianShuZu = (SanzhangDianShuZu) dianshuZu;
-					DianShu dianshu = sanzhangDianShuZu.getDianShu();
-					if (dianshuCountArray[dianshu.ordinal()] == 3) {
-						if (noWangSanzhangSolutionList.isEmpty()) {
-							noWangSanzhangSolutionList.add(solution);
+				// 三带二
+				if (dianshuZu instanceof SandaierDianShuZu) {
+					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;
+					DianShu dianshu = sandaierDianShuZu.getSanzhangDianShuArray()[0];
+//					DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
+					if (dianshuCountArray[dianshu.ordinal()] == 3) { // 取只有三张牌的牌组
+						if (noWangSandaierSolutionList.isEmpty()) {
+							noWangSandaierSolutionList.add(solution);
 						} else {
-							int length = noWangSanzhangSolutionList.size();
+							int length = noWangSandaierSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								if (((SanzhangDianShuZu) noWangSanzhangSolutionList.get(i).getDianShuZu()).getDianShu()
-										.compareTo(sanzhangDianShuZu.getDianShu()) > 0) {
-									noWangSanzhangSolutionList.add(i, solution);
+								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i).getDianShuZu();
+								if (tempDianshuzu.getSanzhangDianShuArray()[0].compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
+									noWangSandaierSolutionList.add(i, solution);
 									break;
 								}
+
 								if (i == length - 1) {
-									noWangSanzhangSolutionList.add(solution);
+									noWangSandaierSolutionList.add(solution);
 								}
 								i++;
 							}
@@ -190,34 +170,37 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 						}
 					}
 				}
-				// 连三张
-				if (dianshuZu instanceof LiansanzhangDianShuZu) {
-					LiansanzhangDianShuZu liansanzhangDianShuZu = (LiansanzhangDianShuZu) dianshuZu;
-					DianShu[] lianXuDianShuArray = liansanzhangDianShuZu.getLianXuDianShuArray();
-					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 3) {
-							allSuccess = false;
-							break;
+				// 飞机
+				if (dianshuZu instanceof FeijiDianShuZu) {
+					FeijiDianShuZu feijiDianShuZu = (FeijiDianShuZu) dianshuZu;
+					DianShu[] sanzhangArray = feijiDianShuZu.getSanzhangDianShuArray();
+					DianShu[] daipaiArray = feijiDianShuZu.getDaipaiDianShuArray();
+
+					// 不拆炸弹
+					boolean boomFlag = false;
+					for(int i = 0; i < sanzhangArray.length; i++) {
+						int dianshuIndex = sanzhangArray[i].ordinal();
+						if (dianshuCountArray[dianshuIndex] != 3) {
+							boomFlag = true;
 						}
 					}
-					if (allSuccess) {
-						if (noWangLiansanzhangSolutionList.isEmpty()) {
-							noWangLiansanzhangSolutionList.add(solution);
+					if (!boomFlag) {
+						if (noWangFeijiSolutionList.isEmpty()) {
+							noWangFeijiSolutionList.add(solution);
 						} else {
-							int length = noWangLiansanzhangSolutionList.size();
+							int length = noWangDanzhangSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								if (((LiansanzhangDianShuZu) noWangLiansanzhangSolutionList.get(i).getDianShuZu())
-										.getLianXuDianShuArray()[0].compareTo(
-												((LiansanzhangDianShuZu) dianshuZu).getLianXuDianShuArray()[0]) > 0) {
-									noWangLiansanzhangSolutionList.add(i, solution);
-									break;
+								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
+								// 不同类型飞机直接加入，同类型比大小
+								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
+									noWangFeijiSolutionList.add(solution);
+								} else {
+									if (tempFeiji.getSanzhangDianShuArray()[0].compareTo(sanzhangArray[0]) > 0) {
+										noWangFeijiSolutionList.add(i, solution);
+										break;
+									}
 								}
-								if (i == length - 1) {
-									noWangLiansanzhangSolutionList.add(solution);
-								}
-								i++;
 							}
 						}
 					}
@@ -287,27 +270,29 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					}
 				}
 			}
-		} else {
-			for (DaPaiDianShuSolution solution : noWangSolutionList) {
+		} else { // 压牌时的提示
+			for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 				DianShuZu dianshuZu = solution.getDianShuZu();
-				// 三张
-				if (dianshuZu instanceof SanzhangDianShuZu) {
-					SanzhangDianShuZu sanzhangDianShuZu = (SanzhangDianShuZu) dianshuZu;
-					DianShu dianshu = sanzhangDianShuZu.getDianShu();
-					if (dianshuCountArray[dianshu.ordinal()] < 4) {
-						if (noWangSanzhangSolutionList.isEmpty()) {
-							noWangSanzhangSolutionList.add(solution);
+				// 三带二
+				if (dianshuZu instanceof SandaierDianShuZu) {
+					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;
+					DianShu dianshu = sandaierDianShuZu.getSanzhangDianShuArray()[0];
+//					DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
+					if (dianshuCountArray[dianshu.ordinal()] == 3) { // 取只有三张牌的牌组
+						if (noWangSandaierSolutionList.isEmpty()) {
+							noWangSandaierSolutionList.add(solution);
 						} else {
-							int length = noWangSanzhangSolutionList.size();
+							int length = noWangSandaierSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								if (((SanzhangDianShuZu) noWangSanzhangSolutionList.get(i).getDianShuZu()).getDianShu()
-										.compareTo(sanzhangDianShuZu.getDianShu()) > 0) {
-									noWangSanzhangSolutionList.add(i, solution);
+								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i).getDianShuZu();
+								if (tempDianshuzu.getSanzhangDianShuArray()[0].compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
+									noWangSandaierSolutionList.add(i, solution);
 									break;
 								}
+
 								if (i == length - 1) {
-									noWangSanzhangSolutionList.add(solution);
+									noWangSandaierSolutionList.add(solution);
 								}
 								i++;
 							}
@@ -422,34 +407,37 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 						}
 					}
 				}
-				// 连三张
-				if (dianshuZu instanceof LiansanzhangDianShuZu) {
-					LiansanzhangDianShuZu liansanzhangDianShuZu = (LiansanzhangDianShuZu) dianshuZu;
-					DianShu[] lianXuDianShuArray = liansanzhangDianShuZu.getLianXuDianShuArray();
-					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 3) {
-							allSuccess = false;
-							break;
+				// 飞机
+				if (dianshuZu instanceof FeijiDianShuZu) {
+					FeijiDianShuZu feijiDianShuZu = (FeijiDianShuZu) dianshuZu;
+					DianShu[] sanzhangArray = feijiDianShuZu.getSanzhangDianShuArray();
+					DianShu[] daipaiArray = feijiDianShuZu.getDaipaiDianShuArray();
+
+					// 不拆炸弹
+					boolean boomFlag = false;
+					for(int i = 0; i < sanzhangArray.length; i++) {
+						int dianshuIndex = sanzhangArray[i].ordinal();
+						if (dianshuCountArray[dianshuIndex] != 3) {
+							boomFlag = true;
 						}
 					}
-					if (allSuccess) {
-						if (noWangLiansanzhangSolutionList.isEmpty()) {
-							noWangLiansanzhangSolutionList.add(solution);
+					if (!boomFlag) {
+						if (noWangFeijiSolutionList.isEmpty()) {
+							noWangFeijiSolutionList.add(solution);
 						} else {
-							int length = noWangLiansanzhangSolutionList.size();
+							int length = noWangDanzhangSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								if (((LiansanzhangDianShuZu) noWangLiansanzhangSolutionList.get(i).getDianShuZu())
-										.getLianXuDianShuArray()[0].compareTo(
-												((LiansanzhangDianShuZu) dianshuZu).getLianXuDianShuArray()[0]) > 0) {
-									noWangLiansanzhangSolutionList.add(i, solution);
-									break;
+								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
+								// 不同类型飞机直接加入，同类型比大小
+								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
+									noWangFeijiSolutionList.add(solution);
+								} else {
+									if (tempFeiji.getSanzhangDianShuArray()[0].compareTo(sanzhangArray[0]) > 0) {
+										noWangFeijiSolutionList.add(i, solution);
+										break;
+									}
 								}
-								if (i == length - 1) {
-									noWangLiansanzhangSolutionList.add(solution);
-								}
-								i++;
 							}
 						}
 					}
@@ -521,8 +509,6 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 			}
 		}
 
-
-
 		DaPaiDianShuSolution maxZhadanSolution = null;
 		for (DaPaiDianShuSolution solution : YaPaiSolutions) {
 			DianShuZu dianshuZu = solution.getDianShuZu();
@@ -535,13 +521,13 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 			}
 		}
 		if (maxZhadanSolution != null) {
-			if (!zhadanSolutionList.isEmpty()) {
-				DaPaiDianShuSolution solution = zhadanSolutionList.getLast();
+			if (!danGeZhadanSolutionList.isEmpty()) {
+				DaPaiDianShuSolution solution = danGeZhadanSolutionList.getLast();
 				if (!solution.getDianshuZuheIdx().equals(maxZhadanSolution.getDianshuZuheIdx())) {
-					zhadanSolutionList.add(maxZhadanSolution);
+					danGeZhadanSolutionList.add(maxZhadanSolution);
 				}
 			} else {
-				zhadanSolutionList.add(maxZhadanSolution);
+				danGeZhadanSolutionList.add(maxZhadanSolution);
 			}
 		}
 		noWangDanzhangSolutionList.addAll(noWangDanzhangYiShangSolutionList);
@@ -550,32 +536,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 
 		filtedSolutionList.addAll(noWangDanzhangSolutionList);
 		filtedSolutionList.addAll(noWangDuiziSolutionList);
-		filtedSolutionList.addAll(noWangSanzhangSolutionList);
+		filtedSolutionList.addAll(noWangSandaierSolutionList);
 		filtedSolutionList.addAll(noWangShunziSolutionList);
 		filtedSolutionList.addAll(noWangLianduiSolutionList);
-		filtedSolutionList.addAll(noWangLiansanzhangSolutionList);
+		filtedSolutionList.addAll(noWangFeijiSolutionList);
 
-		// TODO: 2019/3/5
-		
-//		if (noWangDanzhangSolutionList.isEmpty() && bx.equals(BianXingWanFa.baibian)) {
-//			filtedSolutionList.addAll(hasWangDanzhangSolutionList);
-//		}
-		if (noWangDuiziSolutionList.isEmpty() && allShoupai.size() == 2) {
-			filtedSolutionList.addAll(hasWangDuiziSolutionList);
-		}
-		if (noWangSanzhangSolutionList.isEmpty() && allShoupai.size() == 3) {
-			filtedSolutionList.addAll(hasWangSanzhangSolutionList);
-		}
-		if (noWangShunziSolutionList.isEmpty()) {
-			filtedSolutionList.addAll(hasWangShunziSolutionList);
-		}
-		if (noWangLianduiSolutionList.isEmpty()) {
-			filtedSolutionList.addAll(hasWangLianduiSolutionList);
-		}
-		if (noWangLiansanzhangSolutionList.isEmpty()) {
-			filtedSolutionList.addAll(hasWangLiansanzhangSolutionList);
-		}
-		filtedSolutionList.addAll(zhadanSolutionList);
+		filtedSolutionList.addAll(danGeZhadanSolutionList);
 		return filtedSolutionList;
 	}
 

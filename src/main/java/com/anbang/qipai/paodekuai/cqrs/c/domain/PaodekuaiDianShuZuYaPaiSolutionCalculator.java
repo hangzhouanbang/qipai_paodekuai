@@ -34,6 +34,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 			DanzhangDianShuZu beiYaDanzhangDianShuZu = (DanzhangDianShuZu) beiYaDianShuZu;
 			// 大小王做单张牌打出必定是作为本身的牌的点数
 
+			// 本局报单时单张必须打最大的牌
 			List<DanzhangDianShuZu> danzhangDianShuZuList;
 			if (baodan) {
 				danzhangDianShuZuList = PaodekuaiDianShuZuGenerator.largestDanzhangDianshuzu(dianShuAmount);

@@ -1,6 +1,5 @@
 package com.anbang.qipai.paodekuai.cqrs.c.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,21 +13,14 @@ import com.dml.puke.pai.DianShu;
 import com.dml.puke.pai.PukePai;
 import com.dml.puke.pai.PukePaiMian;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DanzhangDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZuGenerator;
-import com.dml.puke.wanfa.dianshu.dianshuzu.DuiziDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.LianXuDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.LianXuDianShuZuComparator;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.ZhadanComparator;
 import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
 import com.dml.paodekuai.pai.dianshuzu.PaiXing;
-import com.dml.paodekuai.pai.jiesuanpai.DawangDangPai;
-import com.dml.paodekuai.pai.jiesuanpai.ShoupaiJiesuanPai;
-import com.dml.paodekuai.pai.jiesuanpai.XiaowangDangPai;
 import com.dml.paodekuai.player.action.da.AllKedaPaiSolutionsGenerator;
 import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
+import org.apache.commons.lang.ArrayUtils;
 
 public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolutionsGenerator {
     private OptionalPlay optionalPlay;
@@ -75,15 +67,19 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
     @Override
     public Map<String, DaPaiDianShuSolution> firstAllKedaPaiSolutions(Map<Integer, PukePai> allShoupai) {
         // 不是首张必出黑桃三即为一般方法
-        Map<String, DaPaiDianShuSolution> yaPaiSolutionCandidates = generateAllKedaPaiSolutions(allShoupai, false);
         if (!optionalPlay.isBichu()) {
-            return yaPaiSolutionCandidates;
+            return generateAllKedaPaiSolutions(allShoupai, false);
         }
 
-        // TODO: 2019/3/12 优化
-        for (DaPaiDianShuSolution solution : yaPaiSolutionCandidates.values()) {
-            solution.getBichuPai().add(PukePaiMian.heitaosan);
-        }
+        // 黑桃三必出玩法
+        Map<String, DaPaiDianShuSolution> yaPaiSolutionCandidates = new HashMap<>();
+        Map<String, DaPaiDianShuSolution> allPaiSolutionCandidates = generateAllKedaPaiSolutions(allShoupai, false);
+        allPaiSolutionCandidates.forEach((k, v) -> {
+            if (ArrayUtils.contains(v.getDachuDianShuArray(), DianShu.san)) {
+                v.getBichuPai().add(PukePaiMian.heitaosan);
+                yaPaiSolutionCandidates.put(k, v);
+            }
+        });
         return yaPaiSolutionCandidates;
     }
 
