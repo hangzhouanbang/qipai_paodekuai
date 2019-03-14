@@ -111,7 +111,7 @@ spring:
           producer:
             partitionCount: 1
   application:
-    name: qipai-admin-facade
+    name: qipai-paodekuai
 server:
   port: 2007
   tomcat:
