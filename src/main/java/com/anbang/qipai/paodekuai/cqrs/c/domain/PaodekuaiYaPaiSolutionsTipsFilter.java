@@ -5,9 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.dml.paodekuai.pai.dianshuzu.DaipaiDianShuZu;
-import com.dml.paodekuai.pai.dianshuzu.FeijiDianShuZu;
-import com.dml.paodekuai.pai.dianshuzu.SandaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.*;
 import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
@@ -85,6 +83,10 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		LinkedList<DaPaiDianShuSolution> noWangShunziSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> noWangLianduiSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> noWangFeijiSolutionList = new LinkedList<>();
+		LinkedList<DaPaiDianShuSolution> sanzhangSolutionList = new LinkedList<>();
+		LinkedList<DaPaiDianShuSolution> sidaierSolutionList = new LinkedList<>();
+		LinkedList<DaPaiDianShuSolution> sidaisanSolutionList = new LinkedList<>();
+
 
 		// 单张至两张的单张
 		LinkedList<DaPaiDianShuSolution> noWangDanzhangYiShangSolutionList = new LinkedList<>();
@@ -96,6 +98,81 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		if (!yapai) {
 			for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 				DianShuZu dianshuZu = solution.getDianShuZu();
+				// 三张
+				if (dianshuZu instanceof SanzhangDianShuZu) {
+					SanzhangDianShuZu sanzhangDianShuZu = (SanzhangDianShuZu) dianshuZu;
+					DianShu dianshu = sanzhangDianShuZu.getDianShu();
+					if (dianshuCountArray[dianshu.ordinal()] < 4) {
+						if (sanzhangSolutionList.isEmpty()) {
+							sanzhangSolutionList.add(solution);
+						} else {
+							int length = sanzhangSolutionList.size();
+							int i = 0;
+							while (i < length) {
+								if (((SanzhangDianShuZu) sanzhangSolutionList.get(i).getDianShuZu()).getDianShu()
+										.compareTo(sanzhangDianShuZu.getDianShu()) > 0) {
+									sanzhangSolutionList.add(i, solution);
+									break;
+								}
+								if (i == length - 1) {
+									sanzhangSolutionList.add(solution);
+								}
+								i++;
+							}
+						}
+					}
+				}
+
+				// 四带二
+				if(dianshuZu instanceof SidaierDianShuZu) {
+					SidaierDianShuZu sidaierDianShuZu = (SidaierDianShuZu) dianshuZu;
+					DianShu dianShu = sidaierDianShuZu.getDanpaiDianShu();
+					DianShu[] dianpaiArray = sidaierDianShuZu.getDaipaiDianShuArray();
+
+					// TODO: 2019/3/15 根据被带牌与原牌的关系挑选提示牌
+					if(sidaierSolutionList.isEmpty()) {
+						sidaierSolutionList.add(solution);
+					} else {
+						int length = sidaierSolutionList.size();
+						int i = 0;
+						while (i < length) {
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
+								sidaierSolutionList.add(i, solution);
+								break;
+							}
+							if (i == length - 1) {
+								noWangSandaierSolutionList.add(solution);
+							}
+							i++;
+						}
+					}
+				}
+				// 四带三
+				if(dianshuZu instanceof SidaisanDianShuZu) {
+					final SidaisanDianShuZu sidaisanDianShuZu = (SidaisanDianShuZu) dianshuZu;
+					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
+					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
+
+					if(sidaierSolutionList.isEmpty()) {
+						sidaierSolutionList.add(solution);
+					} else {
+						int length = sidaierSolutionList.size();
+						int i = 0;
+						while (i < length) {
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
+								sidaierSolutionList.add(i, solution);
+								break;
+							}
+							if (i == length - 1) {
+								noWangSandaierSolutionList.add(solution);
+							}
+							i++;
+						}
+					}
+				}
+
 				// 三带二
 				if (dianshuZu instanceof SandaierDianShuZu) {
 					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;
@@ -273,6 +350,80 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		} else { // 压牌时的提示
 			for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 				DianShuZu dianshuZu = solution.getDianShuZu();
+				// 三张
+				if (dianshuZu instanceof SanzhangDianShuZu) {
+					SanzhangDianShuZu sanzhangDianShuZu = (SanzhangDianShuZu) dianshuZu;
+					DianShu dianshu = sanzhangDianShuZu.getDianShu();
+					if (dianshuCountArray[dianshu.ordinal()] < 4) {
+						if (sanzhangSolutionList.isEmpty()) {
+							sanzhangSolutionList.add(solution);
+						} else {
+							int length = sanzhangSolutionList.size();
+							int i = 0;
+							while (i < length) {
+								if (((SanzhangDianShuZu) sanzhangSolutionList.get(i).getDianShuZu()).getDianShu()
+										.compareTo(sanzhangDianShuZu.getDianShu()) > 0) {
+									sanzhangSolutionList.add(i, solution);
+									break;
+								}
+								if (i == length - 1) {
+									sanzhangSolutionList.add(solution);
+								}
+								i++;
+							}
+						}
+					}
+				}
+
+				// 四带二
+				if(dianshuZu instanceof SidaierDianShuZu) {
+					SidaierDianShuZu sidaierDianShuZu = (SidaierDianShuZu) dianshuZu;
+					DianShu dianShu = sidaierDianShuZu.getDanpaiDianShu();
+					DianShu[] dianpaiArray = sidaierDianShuZu.getDaipaiDianShuArray();
+
+					// TODO: 2019/3/15 根据被带牌与原牌的关系挑选提示牌
+					if(sidaierSolutionList.isEmpty()) {
+						sidaierSolutionList.add(solution);
+					} else {
+						int length = sidaierSolutionList.size();
+						int i = 0;
+						while (i < length) {
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
+								sidaierSolutionList.add(i, solution);
+								break;
+							}
+							if (i == length - 1) {
+								noWangSandaierSolutionList.add(solution);
+							}
+							i++;
+						}
+					}
+				}
+				// 四带三
+				if(dianshuZu instanceof SidaisanDianShuZu) {
+					final SidaisanDianShuZu sidaisanDianShuZu = (SidaisanDianShuZu) dianshuZu;
+					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
+					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
+
+					if(sidaierSolutionList.isEmpty()) {
+						sidaierSolutionList.add(solution);
+					} else {
+						int length = sidaierSolutionList.size();
+						int i = 0;
+						while (i < length) {
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
+								sidaierSolutionList.add(i, solution);
+								break;
+							}
+							if (i == length - 1) {
+								noWangSandaierSolutionList.add(solution);
+							}
+							i++;
+						}
+					}
+				}
 				// 三带二
 				if (dianshuZu instanceof SandaierDianShuZu) {
 					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;

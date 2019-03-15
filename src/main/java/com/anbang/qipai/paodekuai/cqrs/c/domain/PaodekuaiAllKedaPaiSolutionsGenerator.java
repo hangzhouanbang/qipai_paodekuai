@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSON;
 import com.dml.paodekuai.pai.dianshuzu.PaodekuaiDianShuZuGenerator;
 import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
@@ -21,6 +22,8 @@ import com.dml.paodekuai.pai.dianshuzu.PaiXing;
 import com.dml.paodekuai.player.action.da.AllKedaPaiSolutionsGenerator;
 import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolutionsGenerator {
     private OptionalPlay optionalPlay;
@@ -30,6 +33,8 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
     private LianXuDianShuZuComparator lianXuDianShuZuComparator;
 
     private DaipaiComparator daipaiComparator;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public Map<String, DaPaiDianShuSolution> generateAllKedaPaiSolutions(Map<Integer, PukePai> allShoupai, boolean baodan) {
@@ -61,6 +66,9 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
             //跑的快这里不考虑癞子玩法时会出现点数相同类型不同的情况
             yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
         });
+
+
+        logger.debug(JSON.toJSONString(yaPaiSolutionCandidates));
         return yaPaiSolutionCandidates;
     }
 
@@ -93,11 +101,17 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
         paiXing.setShunziDianShuZuList(DianShuZuCalculator.calculateShunziDianShuZu(dianshuCountArray));
         // 连对
         paiXing.setLianduiDianShuZuList(DianShuZuCalculator.calculateLianduiDianShuZu(dianshuCountArray));
+        // 三张
+        paiXing.setSanzhangDianShuList(DianShuZuCalculator.calculateSanzhangDianShuZu(dianshuCountArray));
+        // 四带二
+        paiXing.setSidaierDianShuZulist(DianShuZuCalculator.calculateSidaierDianShuZu(dianshuCountArray));
+        // 四带三
+        paiXing.setSidaisanDianShuZuList(DianShuZuCalculator.calculateSidaisanDianShuZu(dianshuCountArray));
         // 三带二
-        paiXing.setSandaierDianShuZuArrayList(DianShuZuCalculator.calculateSanzhangDianShuZu(dianshuCountArray,
+        paiXing.setSandaierDianShuZuArrayList(DianShuZuCalculator.calculateSandaierDianShuZu(dianshuCountArray,
                 shoupaiCount, optionalPlay.isSandaique()));
         // 飞机
-        paiXing.setFeijiDianShuZuArrayList(DianShuZuCalculator.calculateLiansanzhangDianShuZu(dianshuCountArray,
+        paiXing.setFeijiDianShuZuArrayList(DianShuZuCalculator.calculateFeijiDianShuZu(dianshuCountArray,
                 shoupaiCount, optionalPlay.isFeijique()));
         // 普通炸弹
         paiXing.setDanGeZhadanDianShuZuList(DianShuZuCalculator.calculateDanGeZhadanDianShuZu(dianshuCountArray));

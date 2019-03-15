@@ -6,12 +6,7 @@ import com.dml.paodekuai.pai.dianshuzu.*;
 import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.DanzhangDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.DuiziDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.LianXuDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.LianduiDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.ShunziDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.*;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.DanGeDianShuZuComparator;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.LianXuDianShuZuComparator;
@@ -116,14 +111,27 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 		}
 		if (beiYaDianShuZu instanceof SandaierDianShuZu) {
 			// 三带二
-			paiXing.setSandaierDianShuZuArrayList(DianShuZuCalculator.calculateSanzhangDianShuZu(dianshuCountArray,
+			paiXing.setSandaierDianShuZuArrayList(DianShuZuCalculator.calculateSandaierDianShuZu(dianshuCountArray,
 					shoupaiCount, optionalPlay.isSandaique()));
 		}
 		if (beiYaDianShuZu instanceof FeijiDianShuZu) {
 			// 飞机
-			paiXing.setFeijiDianShuZuArrayList(DianShuZuCalculator.calculateLiansanzhangDianShuZu(dianshuCountArray,
+			paiXing.setFeijiDianShuZuArrayList(DianShuZuCalculator.calculateFeijiDianShuZu(dianshuCountArray,
 					shoupaiCount, optionalPlay.isFeijique()));
 		}
+		if (beiYaDianShuZu instanceof SanzhangDianShuZu) {
+			// 三张
+			paiXing.setSanzhangDianShuList(DianShuZuCalculator.calculateSanzhangDianShuZu(dianshuCountArray));
+		}
+		if (beiYaDianShuZu instanceof SidaierDianShuZu) {
+			// 四带二
+			paiXing.setSidaierDianShuZulist(DianShuZuCalculator.calculateSidaierDianShuZu(dianshuCountArray));
+		}
+		if (beiYaDianShuZu instanceof SidaisanDianShuZu) {
+			// 四带三
+			paiXing.setSidaisanDianShuZuList(DianShuZuCalculator.calculateSidaisanDianShuZu(dianshuCountArray));
+		}
+
 		paiXing = paiXingFilter(paiXing, beiYaDianShuZu);
 		solutionSet.addAll(DianShuZuCalculator.calculateAllDaPaiDianShuSolutionWithoutWangDang(paiXing));
 	}
