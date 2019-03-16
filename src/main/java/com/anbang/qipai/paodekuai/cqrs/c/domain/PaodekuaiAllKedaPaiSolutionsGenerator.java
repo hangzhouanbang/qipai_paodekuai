@@ -115,6 +115,8 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
                 shoupaiCount, optionalPlay.isFeijique()));
         // 普通炸弹
         paiXing.setDanGeZhadanDianShuZuList(DianShuZuCalculator.calculateDanGeZhadanDianShuZu(dianshuCountArray));
+        // 带牌炸弹（四带一）
+        paiXing.setDaipaiZhaDanDianShuZuList((DianShuZuCalculator.calculateDaiPaiZhaDanDianShuZu(dianshuCountArray)));
 
         solutionSet.addAll(DianShuZuCalculator.calculateAllDaPaiDianShuSolutionWithoutWangDang(paiXing));
     }

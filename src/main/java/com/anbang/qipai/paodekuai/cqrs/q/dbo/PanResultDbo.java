@@ -11,7 +11,7 @@ public class PanResultDbo {
 	private String id;
 	private String gameId;
 	private int panNo;
-	private boolean chaodi;
+//	private boolean chaodi;
 	private List<PaodekuaiPanPlayerResultDbo> playerResultList;
 	private long finishTime;
 	private PanActionFrame panActionFrame;
@@ -22,7 +22,6 @@ public class PanResultDbo {
 	public PanResultDbo(String gameId, PaodekuaiPanResult panResult) {
 		this.gameId = gameId;
 		panNo = panResult.getPan().getNo();
-		this.chaodi = panResult.isChaodi();
 		playerResultList = new ArrayList<>();
 		for (PaodekuaiPanPlayerResult playerResult : panResult.getPanPlayerResultList()) {
 			PaodekuaiPanPlayerResultDbo dbo = new PaodekuaiPanPlayerResultDbo();
@@ -56,14 +55,6 @@ public class PanResultDbo {
 
 	public void setPanNo(int panNo) {
 		this.panNo = panNo;
-	}
-
-	public boolean isChaodi() {
-		return chaodi;
-	}
-
-	public void setChaodi(boolean chaodi) {
-		this.chaodi = chaodi;
 	}
 
 	public List<PaodekuaiPanPlayerResultDbo> getPlayerResultList() {

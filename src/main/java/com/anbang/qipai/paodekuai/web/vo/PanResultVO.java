@@ -12,7 +12,7 @@ public class PanResultVO {
 
 	private List<PaodekuaiPanPlayerResultVO> playerResultList;
 
-	private boolean chaodi;
+//	private boolean chaodi;
 
 	private int panNo;
 
@@ -42,7 +42,6 @@ public class PanResultVO {
 						pukeGameDbo.findPlayer(panPlayerResult.getPlayerId()), panPlayerResult, paodekuaiPlayer));
 			});
 		}
-		chaodi = panResultDbo.isChaodi();
 		panNo = panResultDbo.getPanNo();
 		finishTime = panResultDbo.getFinishTime();
 		lastPanActionFrame = new PanActionFrameVO(panResultDbo.getPanActionFrame());
@@ -62,14 +61,6 @@ public class PanResultVO {
 
 	public void setPlayerResultList(List<PaodekuaiPanPlayerResultVO> playerResultList) {
 		this.playerResultList = playerResultList;
-	}
-
-	public boolean isChaodi() {
-		return chaodi;
-	}
-
-	public void setChaodi(boolean chaodi) {
-		this.chaodi = chaodi;
 	}
 
 	public int getPanNo() {

@@ -75,7 +75,7 @@ public class PukePlayQueryService {
 		}
 
 		GameLatestPanActionFrameDbo frame = gameLatestPanActionFrameDboDao.findById(gameId);
-		PanActionFrame panActionFrame = pvFilter.filter(frame, playerId, pukeGameDbo.isShuangming());
+		PanActionFrame panActionFrame = pvFilter.filter(frame, playerId);
 		return panActionFrame;
 	}
 

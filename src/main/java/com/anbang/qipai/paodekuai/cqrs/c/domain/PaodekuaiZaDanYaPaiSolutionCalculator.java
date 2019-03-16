@@ -65,6 +65,7 @@ public class PaodekuaiZaDanYaPaiSolutionCalculator implements ZaDanYaPaiSolution
 		PaiXing paiXing = new PaiXing();
 		// 普通炸弹
 		paiXing.setDanGeZhadanDianShuZuList(DianShuZuCalculator.calculateDanGeZhadanDianShuZu(dianshuCountArray));
+		paiXing.setDaipaiZhaDanDianShuZuList(DianShuZuCalculator.calculateDaiPaiZhaDanDianShuZu(dianshuCountArray));
 		paiXing = paiXingFilter(paiXing, beiYaDianShuZu);
 		solutionSet.addAll(DianShuZuCalculator.calculateAllDaPaiDianShuSolutionWithoutWangDang(paiXing));
 	}

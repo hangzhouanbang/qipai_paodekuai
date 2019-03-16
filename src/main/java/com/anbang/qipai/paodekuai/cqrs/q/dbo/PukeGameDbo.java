@@ -16,7 +16,7 @@ public class PukeGameDbo {
 	private int renshu;
 	private OptionalPlay optionalPlay;
 //	private boolean chaodi;
-	private boolean shuangming;
+//	private boolean shuangming;
 //	private boolean fengding;
 //	private ChaPai chapai;
 //	private FaPai fapai;
@@ -93,14 +93,6 @@ public class PukeGameDbo {
 
 	public void setOptionalPlay(OptionalPlay optionalPlay) {
 		this.optionalPlay = optionalPlay;
-	}
-
-	public boolean isShuangming() {
-		return shuangming;
-	}
-
-	public void setShuangming(boolean shuangming) {
-		this.shuangming = shuangming;
 	}
 
 	public GameState getState() {
