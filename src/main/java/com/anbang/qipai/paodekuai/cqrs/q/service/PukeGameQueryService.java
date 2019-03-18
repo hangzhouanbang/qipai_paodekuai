@@ -1,8 +1,13 @@
 package com.anbang.qipai.paodekuai.cqrs.q.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.anbang.qipai.paodekuai.cqrs.q.dao.WatchRecordDao;
+import com.dml.mpgame.game.watch.WatchRecord;
+import com.dml.mpgame.game.watch.Watcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +37,9 @@ public class PukeGameQueryService {
 
 	@Autowired
 	private JuResultDboDao juResultDboDao;
+
+	@Autowired
+	private WatchRecordDao watchRecordDao;
 
 	public PukeGameDbo findPukeGameDboById(String gameId) {
 		return pukeGameDboDao.findById(gameId);
@@ -124,40 +132,37 @@ public class PukeGameQueryService {
 		return gameFinishVoteDboDao.findByGameId(gameId);
 	}
 
-//	@Autowired
-//	private WatchRecordDao watchRecordDao;
-//
-//	public WatchRecord saveWatchRecord(String gameId, Watcher watcher){
-//		WatchRecord watchRecord = watchRecordDao.findByGameId(gameId);
-//		if (watchRecord == null) {
-//			WatchRecord record = new WatchRecord();
-//			List<Watcher> watchers = new ArrayList<>();
-//			watchers.add(watcher);
-//
-//			record.setGameId(gameId);
-//			record.setWatchers(watchers);
-//			watchRecordDao.save(record);
-//			return record;
-//		}
-//
-//		watchRecord.getWatchers().add(watcher);
-//		for (Watcher list : watchRecord.getWatchers()) {
-//			if (list.getId().equals(watcher.getId())){
-//				list.setState(watcher.getState());
-//				watchRecordDao.save(watchRecord);
-//				return watchRecord;
-//			}
-//		}
-//
-//		watchRecord.getWatchers().add(watcher);
-//		watchRecordDao.save(watchRecord);
-//		return watchRecord;
-//	}
-//
-//	public boolean findByPlayerId(String gameId, String playerId){
-//		if (watchRecordDao.findByPlayerId(gameId,playerId) != null) {
-//			return true;
-//		}
-//		return false;
-//	}
+	public WatchRecord saveWatchRecord(String gameId, Watcher watcher){
+		WatchRecord watchRecord = watchRecordDao.findByGameId(gameId);
+		if (watchRecord == null) {
+			WatchRecord record = new WatchRecord();
+			List<Watcher> watchers = new ArrayList<>();
+			watchers.add(watcher);
+
+			record.setGameId(gameId);
+			record.setWatchers(watchers);
+			watchRecordDao.save(record);
+			return record;
+		}
+
+		watchRecord.getWatchers().add(watcher);
+		for (Watcher list : watchRecord.getWatchers()) {
+			if (list.getId().equals(watcher.getId())){
+				list.setState(watcher.getState());
+				watchRecordDao.save(watchRecord);
+				return watchRecord;
+			}
+		}
+
+		watchRecord.getWatchers().add(watcher);
+		watchRecordDao.save(watchRecord);
+		return watchRecord;
+	}
+
+	public boolean findByPlayerId(String gameId, String playerId){
+		if (watchRecordDao.findByPlayerId(gameId,playerId) != null) {
+			return true;
+		}
+		return false;
+	}
 }

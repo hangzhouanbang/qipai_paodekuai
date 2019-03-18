@@ -221,6 +221,7 @@ public class PukeController {
 			}
 		}
 
+		// 通知观战者
 		hintWatcher(pukeActionResult.getPukeGame().getId(), endFlag);
 
 		long endTime = System.currentTimeMillis();
@@ -292,6 +293,7 @@ public class PukeController {
 			}
 		}
 
+		// 通知观战者
 		hintWatcher(pukeActionResult.getPukeGame().getId(), "query");
 
 		long endTime = System.currentTimeMillis();
@@ -353,11 +355,11 @@ public class PukeController {
 	/**
 	 * 通知观战者
 	 */
-	private void hintWatcher (String gameId, String flag) {
-		Map<String ,Object> map = gameCmdService.getwatch(gameId);
+	private void hintWatcher(String gameId, String flag) {
+		Map<String, Object> map = gameCmdService.getwatch(gameId);
 		if (!CollectionUtils.isEmpty(map)) {
 			List<String> playerIds = map.entrySet().stream().map(e -> e.getKey()).collect(Collectors.toList());
-			wsNotifier.notifyToWatchQuery(playerIds,flag);
+			wsNotifier.notifyToWatchQuery(playerIds, flag);
 			if (WatchQueryScope.watchEnd.name().equals(flag)) {
 				gameCmdService.recycleWatch(gameId);
 			}
