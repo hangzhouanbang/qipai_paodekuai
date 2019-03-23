@@ -31,6 +31,7 @@ public class GameRoomMsgReceiver {
 				GameValueObject gameValueObject;
 				try {
 					gameValueObject = gameCmdService.finishGameImmediately(gameId);
+					// TODO: 2019/3/21 lsc add
 				} catch (Exception e) {
 				}
 			}

@@ -26,143 +26,145 @@ import com.dml.mpgame.game.extend.vote.GameFinishVoteValueObject;
 @Service
 public class PukeGameQueryService {
 
-	@Autowired
-	private PukeGameDboDao pukeGameDboDao;
+    @Autowired
+    private PukeGameDboDao pukeGameDboDao;
 
-	@Autowired
-	private PlayerInfoDao playerInfoDao;
+    @Autowired
+    private PlayerInfoDao playerInfoDao;
 
-	@Autowired
-	private GameFinishVoteDboDao gameFinishVoteDboDao;
+    @Autowired
+    private GameFinishVoteDboDao gameFinishVoteDboDao;
 
-	@Autowired
-	private JuResultDboDao juResultDboDao;
+    @Autowired
+    private JuResultDboDao juResultDboDao;
 
-	@Autowired
-	private WatchRecordDao watchRecordDao;
+    @Autowired
+    private WatchRecordDao watchRecordDao;
 
-	public PukeGameDbo findPukeGameDboById(String gameId) {
-		return pukeGameDboDao.findById(gameId);
-	}
+    public PukeGameDbo findPukeGameDboById(String gameId) {
+        return pukeGameDboDao.findById(gameId);
+    }
 
-	public void newPukeGame(PukeGameValueObject pukeGame) {
+    public void newPukeGame(PukeGameValueObject pukeGame) {
 
-		Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
-		pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
-		PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
-		pukeGameDboDao.save(pukeGameDbo);
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
 
-	}
+    }
 
-	public void joinGame(PukeGameValueObject pukeGame) {
-		Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
-		pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
-		PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
-		pukeGameDboDao.save(pukeGameDbo);
-	}
+    public void joinGame(PukeGameValueObject pukeGame) {
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
+    }
 
-	public void leaveGame(PukeGameValueObject pukeGame) {
-		Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
-		pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
-		PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
-		pukeGameDboDao.save(pukeGameDbo);
+    public void leaveGame(PukeGameValueObject pukeGame) {
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGame.allPlayerIds().forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGame, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
 
-		gameFinishVoteDboDao.removeGameFinishVoteDboByGameId(pukeGame.getId());
-		GameFinishVoteValueObject gameFinishVoteValueObject = pukeGame.getVote();
-		GameFinishVoteDbo gameFinishVoteDbo = new GameFinishVoteDbo();
-		gameFinishVoteDbo.setVote(gameFinishVoteValueObject);
-		gameFinishVoteDbo.setGameId(pukeGame.getId());
-		gameFinishVoteDboDao.save(gameFinishVoteDbo);
+        gameFinishVoteDboDao.removeGameFinishVoteDboByGameId(pukeGame.getId());
+        GameFinishVoteValueObject gameFinishVoteValueObject = pukeGame.getVote();
+        GameFinishVoteDbo gameFinishVoteDbo = new GameFinishVoteDbo();
+        gameFinishVoteDbo.setVote(gameFinishVoteValueObject);
+        gameFinishVoteDbo.setGameId(pukeGame.getId());
+        gameFinishVoteDboDao.save(gameFinishVoteDbo);
 
-		PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGame.getJuResult();
-		if (paodekuaiJuResult != null) {
-			JuResultDbo juResultDbo = new JuResultDbo(pukeGame.getId(), null, paodekuaiJuResult);
-			juResultDboDao.save(juResultDbo);
-		}
-	}
+        PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGame.getJuResult();
+        if (paodekuaiJuResult != null) {
+            JuResultDbo juResultDbo = new JuResultDbo(pukeGame.getId(), null, paodekuaiJuResult);
+            juResultDboDao.save(juResultDbo);
+        }
+    }
 
-	public void backToGame(String playerId, PukeGameValueObject pukeGameValueObject) {
-		pukeGameDboDao.updatePlayerOnlineState(pukeGameValueObject.getId(), playerId,
-				pukeGameValueObject.findPlayerOnlineState(playerId));
-		GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
-		gameFinishVoteDboDao.update(pukeGameValueObject.getId(), gameFinishVoteValueObject);
-	}
+    public void backToGame(String playerId, PukeGameValueObject pukeGameValueObject) {
+        pukeGameDboDao.updatePlayerOnlineState(pukeGameValueObject.getId(), playerId,
+                pukeGameValueObject.findPlayerOnlineState(playerId));
+        GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
+        gameFinishVoteDboDao.update(pukeGameValueObject.getId(), gameFinishVoteValueObject);
+    }
 
-	public void finish(PukeGameValueObject pukeGameValueObject) {
-		gameFinishVoteDboDao.removeGameFinishVoteDboByGameId(pukeGameValueObject.getId());
-		GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
-		GameFinishVoteDbo gameFinishVoteDbo = new GameFinishVoteDbo();
-		gameFinishVoteDbo.setVote(gameFinishVoteValueObject);
-		gameFinishVoteDbo.setGameId(pukeGameValueObject.getId());
-		gameFinishVoteDboDao.save(gameFinishVoteDbo);
+    public void finish(PukeGameValueObject pukeGameValueObject) {
+        gameFinishVoteDboDao.removeGameFinishVoteDboByGameId(pukeGameValueObject.getId());
+        GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
+        GameFinishVoteDbo gameFinishVoteDbo = new GameFinishVoteDbo();
+        gameFinishVoteDbo.setVote(gameFinishVoteValueObject);
+        gameFinishVoteDbo.setGameId(pukeGameValueObject.getId());
+        gameFinishVoteDboDao.save(gameFinishVoteDbo);
 
-		Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
-		pukeGameValueObject.allPlayerIds()
-				.forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
-		PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGameValueObject, playerInfoMap);
-		pukeGameDboDao.save(pukeGameDbo);
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGameValueObject.allPlayerIds()
+                .forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGameValueObject, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
 
-		PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGameValueObject
-				.getJuResult();
-		if (paodekuaiJuResult != null) {
-			JuResultDbo juResultDbo = new JuResultDbo(pukeGameValueObject.getId(), null, paodekuaiJuResult);
-			juResultDboDao.save(juResultDbo);
-		}
-	}
+        PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGameValueObject
+                .getJuResult();
+        if (paodekuaiJuResult != null) {
+            JuResultDbo juResultDbo = new JuResultDbo(pukeGameValueObject.getId(), null, paodekuaiJuResult);
+            juResultDboDao.save(juResultDbo);
+        }
+    }
 
-	public void voteToFinish(PukeGameValueObject pukeGameValueObject) {
-		GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
-		gameFinishVoteDboDao.update(pukeGameValueObject.getId(), gameFinishVoteValueObject);
+    public void voteToFinish(PukeGameValueObject pukeGameValueObject) {
+        GameFinishVoteValueObject gameFinishVoteValueObject = pukeGameValueObject.getVote();
+        gameFinishVoteDboDao.update(pukeGameValueObject.getId(), gameFinishVoteValueObject);
 
-		Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
-		pukeGameValueObject.allPlayerIds()
-				.forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
-		PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGameValueObject, playerInfoMap);
-		pukeGameDboDao.save(pukeGameDbo);
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGameValueObject.allPlayerIds()
+                .forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGameValueObject, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
 
-		PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGameValueObject
-				.getJuResult();
-		if (paodekuaiJuResult != null) {
-			JuResultDbo juResultDbo = new JuResultDbo(pukeGameValueObject.getId(), null, paodekuaiJuResult);
-			juResultDboDao.save(juResultDbo);
-		}
-	}
+        PaodekuaiJuResult paodekuaiJuResult = (PaodekuaiJuResult) pukeGameValueObject
+                .getJuResult();
+        if (paodekuaiJuResult != null) {
+            JuResultDbo juResultDbo = new JuResultDbo(pukeGameValueObject.getId(), null, paodekuaiJuResult);
+            juResultDboDao.save(juResultDbo);
+        }
+    }
 
-	public GameFinishVoteDbo findGameFinishVoteDbo(String gameId) {
-		return gameFinishVoteDboDao.findByGameId(gameId);
-	}
+    public GameFinishVoteDbo findGameFinishVoteDbo(String gameId) {
+        return gameFinishVoteDboDao.findByGameId(gameId);
+    }
 
-	public WatchRecord saveWatchRecord(String gameId, Watcher watcher){
-		WatchRecord watchRecord = watchRecordDao.findByGameId(gameId);
-		if (watchRecord == null) {
-			WatchRecord record = new WatchRecord();
-			List<Watcher> watchers = new ArrayList<>();
-			watchers.add(watcher);
+    public WatchRecord saveWatchRecord(String gameId, Watcher watcher) {
+        WatchRecord watchRecord = watchRecordDao.findByGameId(gameId);
+        if (watchRecord == null) {
+            WatchRecord record = new WatchRecord();
+            List<Watcher> watchers = new ArrayList<>();
+            watchers.add(watcher);
 
-			record.setGameId(gameId);
-			record.setWatchers(watchers);
-			watchRecordDao.save(record);
-			return record;
-		}
+            record.setGameId(gameId);
+            record.setWatchers(watchers);
+            watchRecordDao.save(record);
+            return record;
+        }
 
-		watchRecord.getWatchers().add(watcher);
-		for (Watcher list : watchRecord.getWatchers()) {
-			if (list.getId().equals(watcher.getId())){
-				list.setState(watcher.getState());
-				watchRecordDao.save(watchRecord);
-				return watchRecord;
-			}
-		}
+        for (Watcher list : watchRecord.getWatchers()) {
+            if (list.getId().equals(watcher.getId())) {
+                list.setState(watcher.getState());
+                watchRecordDao.save(watchRecord);
+                return watchRecord;
+            }
+        }
 
-		watchRecord.getWatchers().add(watcher);
-		watchRecordDao.save(watchRecord);
-		return watchRecord;
-	}
+        watchRecord.getWatchers().add(watcher);
+        watchRecordDao.save(watchRecord);
+        return watchRecord;
+    }
 
-	public boolean findByPlayerId(String gameId, String playerId){
-		if (watchRecordDao.findByPlayerId(gameId,playerId) != null) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * 查询观战中的玩家
+     */
+    public boolean findByPlayerId(String gameId, String playerId) {
+        if (watchRecordDao.findByPlayerId(gameId, playerId, "join") != null) {
+            return true;
+        }
+        return false;
+    }
 }
