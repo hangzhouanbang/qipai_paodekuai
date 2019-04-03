@@ -9,6 +9,7 @@ public class PaodekuaiPanPlayerResultMO {
 	private String headimgurl;
 	private int score;// 一盘结算分
 	private int totalScore;// 总分
+	private boolean ying;
 
 	public PaodekuaiPanPlayerResultMO() {
 
@@ -63,4 +64,11 @@ public class PaodekuaiPanPlayerResultMO {
 		this.totalScore = totalScore;
 	}
 
+	public boolean isYing() {
+		return ying;
+	}
+
+	public void setYing(boolean ying) {
+		this.ying = ying;
+	}
 }

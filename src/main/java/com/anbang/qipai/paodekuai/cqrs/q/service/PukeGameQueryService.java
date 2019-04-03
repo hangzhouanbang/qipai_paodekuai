@@ -132,6 +132,20 @@ public class PukeGameQueryService {
         return gameFinishVoteDboDao.findByGameId(gameId);
     }
 
+    public void finishGameImmediately(PukeGameValueObject pukeGameValueObject) {
+        Map<String, PlayerInfo> playerInfoMap = new HashMap<>();
+        pukeGameValueObject.allPlayerIds()
+                .forEach((playerId) -> playerInfoMap.put(playerId, playerInfoDao.findById(playerId)));
+        PukeGameDbo pukeGameDbo = new PukeGameDbo(pukeGameValueObject, playerInfoMap);
+        pukeGameDboDao.save(pukeGameDbo);
+
+        if (pukeGameValueObject.getJuResult() != null) {
+            PaodekuaiJuResult paodekuaiJuResult  = (PaodekuaiJuResult) pukeGameValueObject.getJuResult();
+            JuResultDbo juResultDbo = new JuResultDbo(pukeGameValueObject.getId(), null, paodekuaiJuResult);
+            juResultDboDao.save(juResultDbo);
+        }
+    }
+
     public WatchRecord saveWatchRecord(String gameId, Watcher watcher) {
         WatchRecord watchRecord = watchRecordDao.findByGameId(gameId);
         if (watchRecord == null) {

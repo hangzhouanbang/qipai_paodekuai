@@ -3,6 +3,8 @@ package com.anbang.qipai.paodekuai.msg.receiver;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.anbang.qipai.paodekuai.cqrs.c.domain.PukeGameValueObject;
+import com.anbang.qipai.paodekuai.cqrs.q.service.PukeGameQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -19,6 +21,9 @@ public class GameRoomMsgReceiver {
 	@Autowired
 	private GameCmdService gameCmdService;
 
+	@Autowired
+	private PukeGameQueryService pukeGameQueryService;
+
 	private Gson gson = new Gson();
 
 	@StreamListener(GameRoomSink.PAODEKUAIGAMEROOM)
@@ -28,10 +33,10 @@ public class GameRoomMsgReceiver {
 		if ("gameIds".equals(msg)) {
 			List<String> gameIds = gson.fromJson(json, ArrayList.class);
 			for (String gameId : gameIds) {
-				GameValueObject gameValueObject;
+				PukeGameValueObject gameValueObject;
 				try {
 					gameValueObject = gameCmdService.finishGameImmediately(gameId);
-					// TODO: 2019/3/21 lsc add
+					pukeGameQueryService.finishGameImmediately(gameValueObject);
 				} catch (Exception e) {
 				}
 			}
