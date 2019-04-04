@@ -7,18 +7,19 @@ import com.anbang.qipai.paodekuai.cqrs.q.dbo.PanResultDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 import com.dml.paodekuai.player.PaodekuaiPlayerValueObject;
+import com.dml.paodekuai.wanfa.OptionalPlay;
 
 public class PanResultVO {
 
 	private List<PaodekuaiPanPlayerResultVO> playerResultList;
-
-//	private boolean chaodi;
 
 	private int panNo;
 
 	private long finishTime;
 
 	private PanActionFrameVO lastPanActionFrame;
+
+	private OptionalPlay optionalPlay;
 
 	public PanResultVO() {
 
@@ -45,6 +46,7 @@ public class PanResultVO {
 		panNo = panResultDbo.getPanNo();
 		finishTime = panResultDbo.getFinishTime();
 		lastPanActionFrame = new PanActionFrameVO(panResultDbo.getPanActionFrame());
+		optionalPlay = pukeGameDbo.getOptionalPlay();
 	}
 
 	public PanActionFrameVO getLastPanActionFrame() {
@@ -79,4 +81,11 @@ public class PanResultVO {
 		this.finishTime = finishTime;
 	}
 
+	public OptionalPlay getOptionalPlay() {
+		return optionalPlay;
+	}
+
+	public void setOptionalPlay(OptionalPlay optionalPlay) {
+		this.optionalPlay = optionalPlay;
+	}
 }
