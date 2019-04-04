@@ -2,6 +2,7 @@ package com.anbang.qipai.paodekuai.web.vo;
 
 import java.util.List;
 
+import com.anbang.qipai.paodekuai.cqrs.c.domain.result.PaodekuaiPanPlayerResult;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGamePlayerDbo;
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PaodekuaiPanPlayerResultDbo;
 import com.dml.paodekuai.player.PaodekuaiPlayerValueObject;
@@ -11,11 +12,16 @@ public class PaodekuaiPanPlayerResultVO {
 	private String nickname;
 	private String headimgurl;
 	private PaodekuaiPlayerShoupaiVO allShoupai;
-//	private int xianshubeishu;
-//	private int gongxianfen;
-//	private int bufen;
 	private int score;// 一盘结算分
 	private int totalScore;// 总分
+
+	private int zhadanCount; // 炸弹数
+	private boolean baodan; // 报单
+	private boolean guanmen; // 关门
+	private boolean zhuaniao; //抓鸟
+	private boolean win;
+	private int guanmenCount;  // 赢家关门几人
+	private int yupaiCount;  // 剩余手牌数
 
 	public PaodekuaiPanPlayerResultVO() {
 
@@ -34,8 +40,18 @@ public class PaodekuaiPanPlayerResultVO {
 			allShoupai = new PaodekuaiPlayerShoupaiVO(paodekuaiPlayerValueObject.getAllShoupai(),
 					paodekuaiPlayerValueObject.getTotalShoupai(), shoupaiIdListForSortList.get(0));
 		}
-		score = panPlayerResult.getPlayerResult().getScore();
-		totalScore = panPlayerResult.getPlayerResult().getTotalScore();
+
+		PaodekuaiPanPlayerResult playerResult = panPlayerResult.getPlayerResult();
+		score = playerResult.getScore();
+		totalScore = playerResult.getTotalScore();
+
+		zhadanCount = playerResult.getZhadanCount();
+		baodan = playerResult.isBaodan();
+		guanmen = playerResult.isGuanmen();
+		zhuaniao = playerResult.isZhuaniao();
+		win = playerResult.isWin();
+		guanmenCount = playerResult.getGuanmenCount();
+		yupaiCount = playerResult.getYupaiCount();
 	}
 
 	public PaodekuaiPlayerShoupaiVO getAllShoupai() {
@@ -87,4 +103,59 @@ public class PaodekuaiPanPlayerResultVO {
 		this.totalScore = totalScore;
 	}
 
+	public int getZhadanCount() {
+		return zhadanCount;
+	}
+
+	public void setZhadanCount(int zhadanCount) {
+		this.zhadanCount = zhadanCount;
+	}
+
+	public boolean isBaodan() {
+		return baodan;
+	}
+
+	public void setBaodan(boolean baodan) {
+		this.baodan = baodan;
+	}
+
+	public boolean isGuanmen() {
+		return guanmen;
+	}
+
+	public void setGuanmen(boolean guanmen) {
+		this.guanmen = guanmen;
+	}
+
+	public boolean isZhuaniao() {
+		return zhuaniao;
+	}
+
+	public void setZhuaniao(boolean zhuaniao) {
+		this.zhuaniao = zhuaniao;
+	}
+
+	public boolean isWin() {
+		return win;
+	}
+
+	public void setWin(boolean win) {
+		this.win = win;
+	}
+
+	public int getGuanmenCount() {
+		return guanmenCount;
+	}
+
+	public void setGuanmenCount(int guanmenCount) {
+		this.guanmenCount = guanmenCount;
+	}
+
+	public int getYupaiCount() {
+		return yupaiCount;
+	}
+
+	public void setYupaiCount(int yupaiCount) {
+		this.yupaiCount = yupaiCount;
+	}
 }

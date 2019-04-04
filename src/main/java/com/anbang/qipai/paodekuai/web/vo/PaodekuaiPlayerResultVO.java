@@ -7,11 +7,12 @@ public class PaodekuaiPlayerResultVO {
 	private String playerId;
 	private String nickname;
 	private String headimgurl;
-//	private int shuangkouCount;
-//	private int dankouCount;
-//	private int pingkouCount;
-//	private int maxXianshu;
 	private int totalScore;
+
+	private int danguanCount;
+	private int shuangguanCount;
+	private int boomCount;
+	private int maxScore;
 
 	public PaodekuaiPlayerResultVO(PukeGamePlayerDbo playerDbo) {
 		playerId = playerDbo.getPlayerId();
@@ -26,6 +27,11 @@ public class PaodekuaiPlayerResultVO {
 		nickname = playerDbo.getNickname();
 		headimgurl = playerDbo.getHeadimgurl();
 		totalScore = juPlayerResult.getTotalScore();
+
+		danguanCount = juPlayerResult.getDanguanCount();
+		shuangguanCount = juPlayerResult.getShuangguanCount();
+		boomCount = juPlayerResult.getBoomCount();
+		maxScore = juPlayerResult.getMaxScore();
 	}
 
 	public String getPlayerId() {
