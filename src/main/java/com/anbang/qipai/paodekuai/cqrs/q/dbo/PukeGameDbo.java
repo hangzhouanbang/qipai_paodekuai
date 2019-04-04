@@ -15,11 +15,6 @@ public class PukeGameDbo {
 	private int panshu;
 	private int renshu;
 	private OptionalPlay optionalPlay;
-//	private boolean chaodi;
-//	private boolean shuangming;
-//	private boolean fengding;
-//	private ChaPai chapai;
-//	private FaPai fapai;
 	private GameState state;// 原来是 waitingStart, playing, waitingNextPan, finished
 	private int panNo;
 	private List<PukeGamePlayerDbo> players;
