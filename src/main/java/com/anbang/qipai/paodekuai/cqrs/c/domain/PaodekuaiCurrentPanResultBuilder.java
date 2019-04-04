@@ -49,7 +49,7 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 		List<String> playerIds = currentPan.findAllPlayerId();
 		String zhuaniaoPlayer = currentPan.getZhuaniaoPlayerId();
 
-		int playPaiCount = PaodekuaiConstant.PAI_COUNT / playerIds.size();
+		int playPaiCount = PaodekuaiConstant.PAI_COUNT / 3;
 
 		List<PaodekuaiPanPlayerResult> panPlayerResultList = new ArrayList<>();
 
