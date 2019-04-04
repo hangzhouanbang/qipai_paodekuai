@@ -160,7 +160,7 @@ public class PukeGame extends FixedPlayersMultipanAndVotetofinishGame {
 	}
 
 	public PukeActionResult guo(String playerId, long actionTime) throws Exception {
-		if (optionalPlay.isBiya()) {
+		if (optionalPlay.isBiya() && ju.canPlay(playerId)) {
 			throw new BiyaException();
 		}
 
