@@ -22,6 +22,10 @@ public class PaodekuaiJuPlayerResult {
 		boomCount = boomCount + boomNum;
 	}
 
+	public void increaseTotalScore(int score) {
+		totalScore = totalScore + score;
+	}
+
 	/**
 	 *  ------set/get
 	 */

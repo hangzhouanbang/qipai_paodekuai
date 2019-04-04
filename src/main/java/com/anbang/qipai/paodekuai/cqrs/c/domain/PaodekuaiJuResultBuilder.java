@@ -37,12 +37,12 @@ public class PaodekuaiJuResultBuilder implements JuResultBuilder {
 					if (panPlayerResult.getGuanmenCount() == 2) {
 						juPlayerResult.increaseShuangguanCount();
 					}
-
-					juPlayerResult.increaseBoomCount(panPlayerResult.getZhadanCount());
-
 					if (panPlayerResult.getScore() > juPlayerResult.getMaxScore()) {
 						juPlayerResult.setMaxScore(panPlayerResult.getScore());
 					}
+
+					juPlayerResult.increaseTotalScore(panPlayerResult.getScore());
+					juPlayerResult.increaseBoomCount(panPlayerResult.getZhadanCount());
 				}
 			}
 
