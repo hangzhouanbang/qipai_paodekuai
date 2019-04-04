@@ -18,7 +18,9 @@ public class BoomCountDaActionStatisticsListener implements DaActionStatisticsLi
 
     @Override
     public void updateForNextPan() {
-        playerzhadanshuMap = new HashMap<>();
+        for (String list : playerzhadanshuMap.keySet()) {
+            playerzhadanshuMap.put(list, 0);
+        }
     }
 
     @Override
@@ -26,11 +28,11 @@ public class BoomCountDaActionStatisticsListener implements DaActionStatisticsLi
         String daActionPlayerId = daAction.getActionPlayerId();
         Integer boomCount = playerzhadanshuMap.get(daActionPlayerId);
         if (boomCount == null) {
-            boomCount = 0;
+            playerzhadanshuMap.put(daActionPlayerId, 0);
         }
         DianShuZu dianShuZu = daAction.getDachuPaiZu().getDianShuZu();
         if (dianShuZu instanceof ZhadanDianShuZu) {
-            boomCount++;
+            playerzhadanshuMap.put(daActionPlayerId, boomCount++);
         }
     }
 

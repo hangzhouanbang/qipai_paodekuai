@@ -9,6 +9,10 @@ public class PaodekuaiPanPlayerResult {
 	private int score;// 一盘结算分
 	private int totalScore;// 总分
 
+	private boolean win;
+	private int guanmenCount;  // 赢家关门几人
+	private int yupaiCount;  // 剩余手牌数
+
 	public String getPlayerId() {
 		return playerId;
 	}
@@ -63,5 +67,29 @@ public class PaodekuaiPanPlayerResult {
 
 	public void setTotalScore(int totalScore) {
 		this.totalScore = totalScore;
+	}
+
+	public boolean isWin() {
+		return win;
+	}
+
+	public void setWin(boolean win) {
+		this.win = win;
+	}
+
+	public int getGuanmenCount() {
+		return guanmenCount;
+	}
+
+	public void setGuanmenCount(int guanmenCount) {
+		this.guanmenCount = guanmenCount;
+	}
+
+	public int getYupaiCount() {
+		return yupaiCount;
+	}
+
+	public void setYupaiCount(int yupaiCount) {
+		this.yupaiCount = yupaiCount;
 	}
 }

@@ -108,7 +108,12 @@ public class PukeGame extends FixedPlayersMultipanAndVotetofinishGame {
 		ju.setZaDanYaPaiSolutionCalculator(zaDanYaPaiSolutionCalculator);
 
 		// 已打出的炸弹
+		BoomCountDaActionStatisticsListener boomListener = new BoomCountDaActionStatisticsListener();
+		for (String list : allPlayerIds()) {
+			boomListener.getPlayerzhadanshuMap().put(list, 0);
+		}
 		ju.addDaListener(new BoomCountDaActionStatisticsListener());
+
 		// 开始第一盘
 		ju.startFirstPan(allPlayerIds(), currentTime);
 	}

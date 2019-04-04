@@ -23,14 +23,25 @@ public class PaodekuaiJuResultBuilder implements JuResultBuilder {
 			Map<String, PaodekuaiJuPlayerResult> juPlayerResultMap = new HashMap<>();
 			for (PanResult panResult : ju.getFinishedPanResultList()) {
 				PaodekuaiPanResult paodekuaiPanResult = (PaodekuaiPanResult) panResult;
-				for (PaodekuaiPanPlayerResult panPlayerResult : paodekuaiPanResult
-						.getPanPlayerResultList()) {
-					PaodekuaiJuPlayerResult juPlayerResult = juPlayerResultMap
-							.get(panPlayerResult.getPlayerId());
+				for (PaodekuaiPanPlayerResult panPlayerResult : paodekuaiPanResult.getPanPlayerResultList()) {
+					PaodekuaiJuPlayerResult juPlayerResult = juPlayerResultMap.get(panPlayerResult.getPlayerId());
 					if (juPlayerResult == null) {
 						juPlayerResult = new PaodekuaiJuPlayerResult();
 						juPlayerResult.setPlayerId(panPlayerResult.getPlayerId());
 						juPlayerResultMap.put(panPlayerResult.getPlayerId(), juPlayerResult);
+					}
+
+					if (panPlayerResult.getGuanmenCount() == 1) {
+						juPlayerResult.increaseDanguanCount();
+					}
+					if (panPlayerResult.getGuanmenCount() == 2) {
+						juPlayerResult.increaseShuangguanCount();
+					}
+
+					juPlayerResult.increaseBoomCount(panPlayerResult.getZhadanCount());
+
+					if (panPlayerResult.getScore() > juPlayerResult.getMaxScore()) {
+						juPlayerResult.setMaxScore(panPlayerResult.getScore());
 					}
 				}
 			}

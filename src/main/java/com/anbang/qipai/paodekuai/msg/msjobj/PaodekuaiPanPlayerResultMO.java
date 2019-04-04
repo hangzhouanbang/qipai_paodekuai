@@ -22,6 +22,7 @@ public class PaodekuaiPanPlayerResultMO {
 		headimgurl = playerDbo.getHeadimgurl();
 		score = panPlayerResult.getPlayerResult().getScore();
 		totalScore = panPlayerResult.getPlayerResult().getTotalScore();
+		ying = panPlayerResult.getPlayerResult().isWin();
 	}
 
 	public String getPlayerId() {

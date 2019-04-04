@@ -34,6 +34,10 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 			for (PaodekuaiPanPlayerResult panPlayerResult : latestFinishedPanResult.getPanPlayerResultList()) {
 				playerTotalScoreMap.put(panPlayerResult.getPlayerId(), panPlayerResult.getTotalScore());
 			}
+		} else {
+			for (String list : currentPan.findAllPlayerId()) {
+				playerTotalScoreMap.put(list, 0);
+			}
 		}
 
 		//玩家炸弹数
@@ -54,6 +58,7 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 		boolean winnerZhuaniao = winner.equals(zhuaniaoPlayer);
 		int winnerScore = 0;
 		int winnerBoomScore = boomMap.get(winner) * PaodekuaiConstant.BOOM_SCORE;
+		int guanmenCount = 0;
 
 		// 输家
 		List<String> loserList = playerIds.stream().filter(p -> !p.equals(winner)).collect(Collectors.toList());
@@ -62,6 +67,8 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 			loserPanResulet.setPlayerId(loser);
 
 			int paiScore = currentPan.getPaodekuaiPlayerIdMajiangPlayerMap().get(loser).getAllShoupai().size();
+			loserPanResulet.setYupaiCount(paiScore);
+
 			if (paiScore == 1) {	// 报单不扣牌分
 				paiScore = 0;
 				loserPanResulet.setBaodan(true);
@@ -70,6 +77,7 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 			if (paiScore == playPaiCount) {		//关门手牌分翻倍
 				paiScore = paiScore * 2;
 				loserPanResulet.setGuanmen(true);
+				guanmenCount ++;
 			}
 
 			if (optionalPlay.isZhuaniao() && (winnerZhuaniao || loser.equals(zhuaniaoPlayer))) {	//抓鸟翻倍
@@ -98,6 +106,8 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 		winnerPanResulet.setZhuaniao(winnerZhuaniao);
 		winnerPanResulet.setScore(winnerScore);
 		winnerPanResulet.setTotalScore(winnerScore + playerTotalScoreMap.get(winner));
+		winnerPanResulet.setWin(true);
+		winnerPanResulet.setGuanmenCount(guanmenCount);
 		panPlayerResultList.add(winnerPanResulet);
 
 		PaodekuaiPanResult paodekuaiPanResult = new PaodekuaiPanResult();
