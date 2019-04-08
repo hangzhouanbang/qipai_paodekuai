@@ -1,16 +1,12 @@
 package com.anbang.qipai.paodekuai.web.vo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.anbang.qipai.paodekuai.cqrs.q.dbo.PukeGameInfoDbo;
 
 public class GameInfoVO {
 	private String gameId;
 	private int panNo;
 	private int actionNo;
-	private List<PukeGamePlayerInfoVO> playerInfos;
-//	private List<String> chaodiPlayerIdList;
+	private boolean bichu;
 
 	public GameInfoVO() {
 
@@ -20,8 +16,7 @@ public class GameInfoVO {
 		gameId = gameInfo.getGameId();
 		panNo = gameInfo.getPanNo();
 		actionNo = gameInfo.getActionNo();
-		playerInfos = new ArrayList<>();
-		gameInfo.getPlayerInfos().forEach((playerInfo) -> playerInfos.add(new PukeGamePlayerInfoVO(playerInfo)));
+		bichu = gameInfo.isBichu();
 	}
 
 	public String getGameId() {
@@ -48,12 +43,11 @@ public class GameInfoVO {
 		this.actionNo = actionNo;
 	}
 
-	public List<PukeGamePlayerInfoVO> getPlayerInfos() {
-		return playerInfos;
+	public boolean isBichu() {
+		return bichu;
 	}
 
-	public void setPlayerInfos(List<PukeGamePlayerInfoVO> playerInfos) {
-		this.playerInfos = playerInfos;
+	public void setBichu(boolean bichu) {
+		this.bichu = bichu;
 	}
-
 }

@@ -111,7 +111,7 @@ public class PukePlayQueryService {
 			panActionFrameDbo.setPanActionFrame(panActionFrame);
 			panActionFrameDboDao.save(panActionFrameDbo);
 
-			PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo);
+			PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo, true);
 			gameLatestPukeGameInfoDboDao.save(gameId, pukeGameInfoDbo);
 			pukeGameInfoDboDao.save(pukeGameInfoDbo);
 		}
@@ -135,7 +135,7 @@ public class PukePlayQueryService {
 		panActionFrameDbo.setPanActionFrame(panActionFrame);
 		panActionFrameDboDao.save(panActionFrameDbo);
 
-		PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo);
+		PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo, false);
 		gameLatestPukeGameInfoDboDao.save(gameId, pukeGameInfoDbo);
 		pukeGameInfoDboDao.save(pukeGameInfoDbo);
 		// 盘出结果的话要记录结果
@@ -171,7 +171,7 @@ public class PukePlayQueryService {
 			panActionFrameDbo.setPanActionFrame(readyToNextPanResult.getFirstActionFrame());
 			panActionFrameDboDao.save(panActionFrameDbo);
 
-			PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo);
+			PukeGameInfoDbo pukeGameInfoDbo = new PukeGameInfoDbo(pukeGame, playerInfoMap, actionNo, true);
 			gameLatestPukeGameInfoDboDao.save(gameId, pukeGameInfoDbo);
 			pukeGameInfoDboDao.save(pukeGameInfoDbo);
 		}

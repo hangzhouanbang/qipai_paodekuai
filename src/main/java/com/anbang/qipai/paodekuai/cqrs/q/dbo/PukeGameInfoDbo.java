@@ -1,7 +1,5 @@
 package com.anbang.qipai.paodekuai.cqrs.q.dbo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -10,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.anbang.qipai.paodekuai.cqrs.c.domain.PukeGameValueObject;
 import com.anbang.qipai.paodekuai.plan.bean.PlayerInfo;
-import com.dml.mpgame.game.GamePlayerValueObject;
 
 @Document
 @CompoundIndexes({ @CompoundIndex(name = "gameId_1_panNo_1", def = "{'gameId': 1, 'panNo': 1}") })
@@ -19,23 +16,22 @@ public class PukeGameInfoDbo {
 	private String gameId;
 	private int panNo;
 	private int actionNo;
-	private List<PukeGamePlayerInfoDbo> playerInfos;
+	private boolean bichu;
 
 	public PukeGameInfoDbo() {
 	}
 
-	public PukeGameInfoDbo(PukeGameValueObject pukeGame, Map<String, PlayerInfo> playerInfoMap, int actionNo) {
+	public PukeGameInfoDbo(PukeGameValueObject pukeGame, Map<String, PlayerInfo> playerInfoMap, int actionNo, boolean start) {
 		gameId = pukeGame.getId();
 		panNo = pukeGame.getPanNo();
 		this.actionNo = actionNo;
-		playerInfos = new ArrayList<>();
-		for (GamePlayerValueObject playerValueObject : pukeGame.getPlayers()) {
-			String playerId = playerValueObject.getId();
-			PukeGamePlayerInfoDbo playerInfoDbo = new PukeGamePlayerInfoDbo();
-			playerInfoDbo.setPlayerId(playerId);
-			playerInfos.add(playerInfoDbo);
-		}
 
+		// 新一盘游戏且选了必出玩法，给出必出提示
+		if (start == true && pukeGame.getOptionalPlay().isBichu()) {
+			bichu = true;
+		} else {
+			bichu = false;
+		}
 	}
 
 	public String getId() {
@@ -70,12 +66,11 @@ public class PukeGameInfoDbo {
 		this.actionNo = actionNo;
 	}
 
-	public List<PukeGamePlayerInfoDbo> getPlayerInfos() {
-		return playerInfos;
+	public boolean isBichu() {
+		return bichu;
 	}
 
-	public void setPlayerInfos(List<PukeGamePlayerInfoDbo> playerInfos) {
-		this.playerInfos = playerInfos;
+	public void setBichu(boolean bichu) {
+		this.bichu = bichu;
 	}
-
 }
