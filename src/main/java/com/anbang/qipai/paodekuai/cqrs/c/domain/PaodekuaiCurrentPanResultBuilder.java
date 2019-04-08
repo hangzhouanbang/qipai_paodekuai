@@ -93,8 +93,8 @@ public class PaodekuaiCurrentPanResultBuilder implements CurrentPanResultBuilder
 			}
 
 			int loserScore = paiScore + winnerBoomScore;
-			loserPanResulet.setScore(loserScore);
-			loserPanResulet.setTotalScore(loserScore + playerTotalScoreMap.get(loser));
+			loserPanResulet.setScore(- loserScore);
+			loserPanResulet.setTotalScore(- loserScore + playerTotalScoreMap.get(loser));
 			panPlayerResultList.add(loserPanResulet);
 
 			winnerScore = winnerScore + loserScore;
