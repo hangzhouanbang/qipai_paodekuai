@@ -265,7 +265,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 						if (noWangFeijiSolutionList.isEmpty()) {
 							noWangFeijiSolutionList.add(solution);
 						} else {
-							int length = noWangDanzhangSolutionList.size();
+							int length = noWangFeijiSolutionList.size();
 							int i = 0;
 							while (i < length) {
 								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
@@ -576,7 +576,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 						if (noWangFeijiSolutionList.isEmpty()) {
 							noWangFeijiSolutionList.add(solution);
 						} else {
-							int length = noWangDanzhangSolutionList.size();
+							int length = noWangFeijiSolutionList.size();
 							int i = 0;
 							while (i < length) {
 								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
