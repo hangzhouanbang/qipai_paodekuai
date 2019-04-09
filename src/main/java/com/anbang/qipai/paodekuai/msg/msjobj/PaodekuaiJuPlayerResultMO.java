@@ -7,11 +7,12 @@ public class PaodekuaiJuPlayerResultMO {
 	private String playerId;
 	private String nickname;
 	private String headimgurl;
-//	private int shuangkouCount;
-//	private int dankouCount;
-//	private int pingkouCount;
-//	private int maxXianshu;
 	private int totalScore;
+
+	private int danguanCount;
+	private int shuangguanCount;
+	private int boomCount;
+	private int maxScore;
 
 	public PaodekuaiJuPlayerResultMO(PukeGamePlayerDbo playerDbo) {
 		playerId = playerDbo.getPlayerId();
@@ -26,6 +27,11 @@ public class PaodekuaiJuPlayerResultMO {
 		nickname = playerDbo.getNickname();
 		headimgurl = playerDbo.getHeadimgurl();
 		totalScore = juPlayerResult.getTotalScore();
+
+		danguanCount = juPlayerResult.getDanguanCount();
+		shuangguanCount = juPlayerResult.getShuangguanCount();
+		boomCount = juPlayerResult.getBoomCount();
+		maxScore = juPlayerResult.getMaxScore();
 	}
 
 	public String getPlayerId() {
@@ -60,4 +66,35 @@ public class PaodekuaiJuPlayerResultMO {
 		this.totalScore = totalScore;
 	}
 
+	public int getDanguanCount() {
+		return danguanCount;
+	}
+
+	public void setDanguanCount(int danguanCount) {
+		this.danguanCount = danguanCount;
+	}
+
+	public int getShuangguanCount() {
+		return shuangguanCount;
+	}
+
+	public void setShuangguanCount(int shuangguanCount) {
+		this.shuangguanCount = shuangguanCount;
+	}
+
+	public int getBoomCount() {
+		return boomCount;
+	}
+
+	public void setBoomCount(int boomCount) {
+		this.boomCount = boomCount;
+	}
+
+	public int getMaxScore() {
+		return maxScore;
+	}
+
+	public void setMaxScore(int maxScore) {
+		this.maxScore = maxScore;
+	}
 }
