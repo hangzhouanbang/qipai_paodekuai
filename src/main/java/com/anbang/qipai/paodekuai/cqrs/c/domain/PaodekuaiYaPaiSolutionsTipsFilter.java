@@ -277,6 +277,10 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 										noWangFeijiSolutionList.add(i, solution);
 										break;
 									}
+									if (i == length - 1) {
+										noWangFeijiSolutionList.add(solution);
+									}
+									i++;
 								}
 							}
 						}
@@ -588,6 +592,10 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 										noWangFeijiSolutionList.add(i, solution);
 										break;
 									}
+									if (i == length - 1) {
+										noWangFeijiSolutionList.add(solution);
+									}
+									i++;
 								}
 							}
 						}
