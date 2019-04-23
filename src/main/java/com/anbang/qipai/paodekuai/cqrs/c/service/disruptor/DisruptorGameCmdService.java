@@ -1,6 +1,7 @@
 package com.anbang.qipai.paodekuai.cqrs.c.service.disruptor;
 
-import com.dml.paodekuai.wanfa.OptionalPlay;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +9,9 @@ import com.anbang.qipai.paodekuai.cqrs.c.domain.PukeGameValueObject;
 import com.anbang.qipai.paodekuai.cqrs.c.domain.result.ReadyForGameResult;
 import com.anbang.qipai.paodekuai.cqrs.c.service.GameCmdService;
 import com.anbang.qipai.paodekuai.cqrs.c.service.impl.GameCmdServiceImpl;
-import com.dml.mpgame.game.GameValueObject;
+import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.highto.framework.concurrent.DeferredResult;
 import com.highto.framework.ddd.CommonCommand;
-
-import java.util.Map;
 
 @Component(value = "gameCmdService")
 public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements GameCmdService {
@@ -22,7 +21,7 @@ public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements 
 
 	@Override
 	public PukeGameValueObject newPukeGame(String gameId, String playerId, Integer panshu, Integer renshu,
-										   OptionalPlay optionalPlay) {
+			OptionalPlay optionalPlay) {
 		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "newPukeGame", gameId, playerId,
 				panshu, renshu, optionalPlay);
 		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
@@ -39,7 +38,7 @@ public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements 
 
 	@Override
 	public PukeGameValueObject newPukeGameLeaveAndQuit(String gameId, String playerId, Integer panshu, Integer renshu,
-													   OptionalPlay optionalPlay) {
+			OptionalPlay optionalPlay) {
 		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "newPukeGameLeaveAndQuit", gameId,
 				playerId, panshu, renshu, optionalPlay);
 		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
@@ -232,14 +231,15 @@ public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements 
 	}
 
 	@Override
-	public PukeGameValueObject joinWatch(String playerId, String nickName, String headimgurl, String gameId) throws Exception {
-		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "joinWatch", playerId, nickName, headimgurl, gameId);
-		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd,
-				() -> {
-					PukeGameValueObject majiangGameValueObject = gameCmdServiceImpl.joinWatch(cmd.getParameter(),
-							cmd.getParameter(), cmd.getParameter(), cmd.getParameter());
-					return majiangGameValueObject;
-				});
+	public PukeGameValueObject joinWatch(String playerId, String nickName, String headimgurl, String gameId)
+			throws Exception {
+		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "joinWatch", playerId, nickName,
+				headimgurl, gameId);
+		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
+			PukeGameValueObject majiangGameValueObject = gameCmdServiceImpl.joinWatch(cmd.getParameter(),
+					cmd.getParameter(), cmd.getParameter(), cmd.getParameter());
+			return majiangGameValueObject;
+		});
 		try {
 			return result.getResult();
 		} catch (Exception e) {
@@ -250,12 +250,11 @@ public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements 
 	@Override
 	public PukeGameValueObject leaveWatch(String playerId, String gameId) throws Exception {
 		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "leaveWatch", playerId, gameId);
-		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd,
-				() -> {
-					PukeGameValueObject majiangGameValueObject = gameCmdServiceImpl.leaveWatch(cmd.getParameter(),
-							cmd.getParameter());
-					return majiangGameValueObject;
-				});
+		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
+			PukeGameValueObject majiangGameValueObject = gameCmdServiceImpl.leaveWatch(cmd.getParameter(),
+					cmd.getParameter());
+			return majiangGameValueObject;
+		});
 		try {
 			return result.getResult();
 		} catch (Exception e) {
@@ -264,20 +263,36 @@ public class DisruptorGameCmdService extends DisruptorCmdServiceBase implements 
 	}
 
 	@Override
-	public Map getwatch(String gameId){
+	public Map getwatch(String gameId) {
 		return gameCmdServiceImpl.getwatch(gameId);
 	}
 
 	@Override
-	public void recycleWatch(String gameId){
-		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "recycleWatch",gameId);
-		DeferredResult<Object> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd,
-				() -> {
-					gameCmdServiceImpl.recycleWatch(cmd.getParameter());
-					return null;
-				});
+	public void recycleWatch(String gameId) {
+		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "recycleWatch", gameId);
+		DeferredResult<Object> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
+			gameCmdServiceImpl.recycleWatch(cmd.getParameter());
+			return null;
+		});
 		try {
 			result.getResult();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public PukeGameValueObject newMajiangGamePlayerLeaveAndQuit(String gameId, String playerId, Integer panshu,
+			Integer renshu, OptionalPlay optionalPlay) {
+		CommonCommand cmd = new CommonCommand(GameCmdServiceImpl.class.getName(), "newMajiangGamePlayerLeaveAndQuit",
+				gameId, playerId, panshu, renshu, optionalPlay);
+		DeferredResult<PukeGameValueObject> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
+			PukeGameValueObject pukeGameValueObject = gameCmdServiceImpl.newMajiangGamePlayerLeaveAndQuit(
+					cmd.getParameter(), cmd.getParameter(), cmd.getParameter(), cmd.getParameter(), cmd.getParameter());
+			return pukeGameValueObject;
+		});
+		try {
+			return result.getResult();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

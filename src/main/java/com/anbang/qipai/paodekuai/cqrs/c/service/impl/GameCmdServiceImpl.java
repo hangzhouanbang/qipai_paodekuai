@@ -1,7 +1,7 @@
 package com.anbang.qipai.paodekuai.cqrs.c.service.impl;
 
-import com.dml.mpgame.game.watch.WatcherMap;
-import com.dml.paodekuai.wanfa.OptionalPlay;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import com.anbang.qipai.paodekuai.cqrs.c.domain.PukeGame;
@@ -10,7 +10,6 @@ import com.anbang.qipai.paodekuai.cqrs.c.domain.result.ReadyForGameResult;
 import com.anbang.qipai.paodekuai.cqrs.c.service.GameCmdService;
 import com.dml.mpgame.game.Finished;
 import com.dml.mpgame.game.Game;
-import com.dml.mpgame.game.GameValueObject;
 import com.dml.mpgame.game.Playing;
 import com.dml.mpgame.game.WaitingStart;
 import com.dml.mpgame.game.extend.fpmpv.back.OnlineGameBackStrategy;
@@ -26,17 +25,17 @@ import com.dml.mpgame.game.leave.PlayerGameLeaveStrategy;
 import com.dml.mpgame.game.leave.PlayerLeaveCancelGameGameLeaveStrategy;
 import com.dml.mpgame.game.player.PlayerFinished;
 import com.dml.mpgame.game.ready.FixedNumberOfPlayersGameReadyStrategy;
+import com.dml.mpgame.game.watch.WatcherMap;
 import com.dml.mpgame.server.GameServer;
 import com.dml.paodekuai.pan.PanActionFrame;
-
-import java.util.Map;
+import com.dml.paodekuai.wanfa.OptionalPlay;
 
 @Component
 public class GameCmdServiceImpl extends CmdServiceBase implements GameCmdService {
 
 	@Override
 	public PukeGameValueObject newPukeGame(String gameId, String playerId, Integer panshu, Integer renshu,
-										   OptionalPlay optionalPlay) {
+			OptionalPlay optionalPlay) {
 		GameServer gameServer = singletonEntityRepository.getEntity(GameServer.class);
 
 		PukeGame newGame = new PukeGame();
@@ -70,7 +69,7 @@ public class GameCmdServiceImpl extends CmdServiceBase implements GameCmdService
 
 	@Override
 	public PukeGameValueObject newPukeGameLeaveAndQuit(String gameId, String playerId, Integer panshu, Integer renshu,
-													   OptionalPlay optionalPlay) {
+			OptionalPlay optionalPlay) {
 		GameServer gameServer = singletonEntityRepository.getEntity(GameServer.class);
 
 		PukeGame newGame = new PukeGame();
@@ -240,7 +239,8 @@ public class GameCmdServiceImpl extends CmdServiceBase implements GameCmdService
 	}
 
 	@Override
-	public PukeGameValueObject joinWatch(String playerId, String nickName, String headimgurl, String gameId) throws Exception {
+	public PukeGameValueObject joinWatch(String playerId, String nickName, String headimgurl, String gameId)
+			throws Exception {
 		WatcherMap watcherMap = singletonEntityRepository.getEntity(WatcherMap.class);
 		watcherMap.join(playerId, nickName, headimgurl, gameId);
 		GameServer gameServer = singletonEntityRepository.getEntity(GameServer.class);
@@ -267,5 +267,39 @@ public class GameCmdServiceImpl extends CmdServiceBase implements GameCmdService
 	public void recycleWatch(String gameId) {
 		WatcherMap watcherMap = singletonEntityRepository.getEntity(WatcherMap.class);
 		watcherMap.recycleWatch(gameId);
+	}
+
+	@Override
+	public PukeGameValueObject newMajiangGamePlayerLeaveAndQuit(String gameId, String playerId, Integer panshu,
+			Integer renshu, OptionalPlay optionalPlay) {
+		GameServer gameServer = singletonEntityRepository.getEntity(GameServer.class);
+
+		PukeGame newGame = new PukeGame();
+
+		newGame.setPanshu(panshu);
+		newGame.setRenshu(renshu);
+		newGame.setFixedPlayerCount(renshu);
+
+		newGame.setOptionalPlay(optionalPlay);
+
+		newGame.setVotePlayersFilter(new OnlineVotePlayersFilter());
+
+		newGame.setJoinStrategy(new FixedNumberOfPlayersGameJoinStrategy(renshu));
+		newGame.setReadyStrategy(new FixedNumberOfPlayersGameReadyStrategy(renshu));
+
+		newGame.setLeaveByOfflineStrategyAfterStart(new OfflineGameLeaveStrategy());
+		newGame.setLeaveByOfflineStrategyBeforeStart(new OfflineAndNotReadyGameLeaveStrategy());
+
+		newGame.setLeaveByHangupStrategyAfterStart(new OfflineGameLeaveStrategy());
+		newGame.setLeaveByHangupStrategyBeforeStart(new OfflineAndNotReadyGameLeaveStrategy());
+
+		newGame.setLeaveByPlayerStrategyAfterStart(new OfflineGameLeaveStrategy());
+		newGame.setLeaveByPlayerStrategyBeforeStart(new PlayerGameLeaveStrategy());
+
+		newGame.setBackStrategy(new OnlineGameBackStrategy());
+		newGame.create(gameId, playerId);
+		gameServer.playerCreateGame(newGame, playerId);
+
+		return new PukeGameValueObject(newGame);
 	}
 }
