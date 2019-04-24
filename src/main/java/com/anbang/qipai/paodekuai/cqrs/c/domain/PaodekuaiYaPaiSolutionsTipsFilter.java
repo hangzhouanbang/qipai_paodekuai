@@ -5,8 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.dml.paodekuai.pai.dianshuzu.*;
-import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
+import com.dml.paodekuai.pai.dianshuzu.DaiPaiZhaDanDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.FeijiDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SandaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SidaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SidaisanDianShuZu;
+import com.dml.paodekuai.player.action.da.YaPaiSolutionsTipsFilter;
+import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
 import com.dml.puke.pai.PukePai;
@@ -15,16 +20,10 @@ import com.dml.puke.wanfa.dianshu.dianshuzu.DanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DuiziDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.LianduiDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.LiansanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.SanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ShunziDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.ZhadanComparator;
-import com.dml.paodekuai.player.action.da.YaPaiSolutionsTipsFilter;
-import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
-
-import javax.crypto.spec.OAEPParameterSpec;
 
 /**
  * 提示顺序： 没有王牌代替的打法、不拆炸弹、同种类型
@@ -53,9 +52,9 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		for (DaPaiDianShuSolution solution : noLaiziSolutionList) {
 			DianShuZu dianshuZu = solution.getDianShuZu();
 			if (dianshuZu instanceof DanGeZhadanDianShuZu) {
-				DanGeZhadanDianShuZu danGeZhadanDianShuZu1 = (DanGeZhadanDianShuZu) dianshuZu;
-				DianShu dianshu = danGeZhadanDianShuZu1.getDianShu();
-				if (danGeZhadanDianShuZu1.getSize() == dianshuCountArray[dianshu.ordinal()]) {//炸弹长度==该点数最大长度
+				if (dianshuZu instanceof DaiPaiZhaDanDianShuZu) {
+					DaiPaiZhaDanDianShuZu danGeZhadanDianShuZu1 = (DaiPaiZhaDanDianShuZu) dianshuZu;
+					DianShu dianshu = danGeZhadanDianShuZu1.getZhadanDian();
 					if (danGeZhadanSolutionList.isEmpty()) {
 						danGeZhadanSolutionList.add(solution);
 					} else {
@@ -73,6 +72,28 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							}
 						}
 					}
+				} else {
+					DanGeZhadanDianShuZu danGeZhadanDianShuZu1 = (DanGeZhadanDianShuZu) dianshuZu;
+					DianShu dianshu = danGeZhadanDianShuZu1.getDianShu();
+					if (danGeZhadanDianShuZu1.getSize() == dianshuCountArray[dianshu.ordinal()]) {// 炸弹长度==该点数最大长度
+						if (danGeZhadanSolutionList.isEmpty()) {
+							danGeZhadanSolutionList.add(solution);
+						} else {
+							int length = danGeZhadanSolutionList.size();
+							for (int i = 0; i < length; i++) {
+								DanGeZhadanDianShuZu danGeZhadanDianShuZu2 = (DanGeZhadanDianShuZu) danGeZhadanSolutionList
+										.get(i).getDianShuZu();
+								int compare = danGeZhadanDianShuZu2.getDianShu().compareTo(dianshu);
+								if (compare > 0) {
+									danGeZhadanSolutionList.add(i, solution);
+									break;
+								}
+								if (i == length - 1) {
+									danGeZhadanSolutionList.add(solution);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -86,7 +107,6 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 		LinkedList<DaPaiDianShuSolution> sanzhangSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> sidaierSolutionList = new LinkedList<>();
 		LinkedList<DaPaiDianShuSolution> sidaisanSolutionList = new LinkedList<>();
-
 
 		// 单张至两张的单张
 		LinkedList<DaPaiDianShuSolution> noWangDanzhangYiShangSolutionList = new LinkedList<>();
@@ -124,19 +144,20 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 				}
 
 				// 四带二
-				if(dianshuZu instanceof SidaierDianShuZu) {
+				if (dianshuZu instanceof SidaierDianShuZu) {
 					SidaierDianShuZu sidaierDianShuZu = (SidaierDianShuZu) dianshuZu;
 					DianShu dianShu = sidaierDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaierDianShuZu.getDaipaiDianShuArray();
 
 					// TODO: 2019/3/15 根据被带牌与原牌的关系挑选提示牌
-					if(sidaierSolutionList.isEmpty()) {
+					if (sidaierSolutionList.isEmpty()) {
 						sidaierSolutionList.add(solution);
 					} else {
 						int length = sidaierSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
 								sidaierSolutionList.add(i, solution);
 								break;
@@ -149,18 +170,19 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					}
 				}
 				// 四带三
-				if(dianshuZu instanceof SidaisanDianShuZu) {
+				if (dianshuZu instanceof SidaisanDianShuZu) {
 					final SidaisanDianShuZu sidaisanDianShuZu = (SidaisanDianShuZu) dianshuZu;
 					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
 
-					if(sidaierSolutionList.isEmpty()) {
+					if (sidaierSolutionList.isEmpty()) {
 						sidaierSolutionList.add(solution);
 					} else {
 						int length = sidaierSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
 								sidaierSolutionList.add(i, solution);
 								break;
@@ -177,7 +199,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 				if (dianshuZu instanceof SandaierDianShuZu) {
 					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;
 					DianShu dianshu = sandaierDianShuZu.getSanzhangDianShuArray()[0];
-//					DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
+					// DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
 					if (dianshuCountArray[dianshu.ordinal()] == 3) { // 取只有三张牌的牌组
 						if (noWangSandaierSolutionList.isEmpty()) {
 							noWangSandaierSolutionList.add(solution);
@@ -185,8 +207,10 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							int length = noWangSandaierSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i).getDianShuZu();
-								if (tempDianshuzu.getSanzhangDianShuArray()[0].compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
+								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i)
+										.getDianShuZu();
+								if (tempDianshuzu.getSanzhangDianShuArray()[0]
+										.compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
 									noWangSandaierSolutionList.add(i, solution);
 									break;
 								}
@@ -255,7 +279,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 
 					// 不拆炸弹
 					boolean boomFlag = false;
-					for(int i = 0; i < sanzhangArray.length; i++) {
+					for (int i = 0; i < sanzhangArray.length; i++) {
 						int dianshuIndex = sanzhangArray[i].ordinal();
 						if (dianshuCountArray[dianshuIndex] != 3) {
 							boomFlag = true;
@@ -268,7 +292,8 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							int length = noWangFeijiSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
+								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i)
+										.getDianShuZu();
 								// 不同类型飞机直接加入，同类型比大小
 								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
 									noWangFeijiSolutionList.add(solution);
@@ -291,12 +316,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					LianduiDianShuZu lianduiDianShuZu = (LianduiDianShuZu) dianshuZu;
 					DianShu[] lianXuDianShuArray = lianduiDianShuZu.getLianXuDianShuArray();
 					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 2) {
-							allSuccess = false;
-							break;
-						}
-					}
+					// for (DianShu dianshu : lianXuDianShuArray) {
+					// if (dianshuCountArray[dianshu.ordinal()] != 2) {
+					// allSuccess = false;
+					// break;
+					// }
+					// }
 					if (allSuccess) {
 						if (noWangLianduiSolutionList.isEmpty()) {
 							noWangLianduiSolutionList.add(solution);
@@ -323,12 +348,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					ShunziDianShuZu shunziDianShuZu = (ShunziDianShuZu) dianshuZu;
 					DianShu[] lianXuDianShuArray = shunziDianShuZu.getLianXuDianShuArray();
 					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 1) {
-							allSuccess = false;
-							break;
-						}
-					}
+					// for (DianShu dianshu : lianXuDianShuArray) {
+					// if (dianshuCountArray[dianshu.ordinal()] != 1) {
+					// allSuccess = false;
+					// break;
+					// }
+					// }
 					if (allSuccess) {
 						if (noWangShunziSolutionList.isEmpty()) {
 							noWangShunziSolutionList.add(solution);
@@ -380,19 +405,20 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 				}
 
 				// 四带二
-				if(dianshuZu instanceof SidaierDianShuZu) {
+				if (dianshuZu instanceof SidaierDianShuZu) {
 					SidaierDianShuZu sidaierDianShuZu = (SidaierDianShuZu) dianshuZu;
 					DianShu dianShu = sidaierDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaierDianShuZu.getDaipaiDianShuArray();
 
 					// TODO: 2019/3/15 根据被带牌与原牌的关系挑选提示牌
-					if(sidaierSolutionList.isEmpty()) {
+					if (sidaierSolutionList.isEmpty()) {
 						sidaierSolutionList.add(solution);
 					} else {
 						int length = sidaierSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
 								sidaierSolutionList.add(i, solution);
 								break;
@@ -405,18 +431,19 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					}
 				}
 				// 四带三
-				if(dianshuZu instanceof SidaisanDianShuZu) {
+				if (dianshuZu instanceof SidaisanDianShuZu) {
 					final SidaisanDianShuZu sidaisanDianShuZu = (SidaisanDianShuZu) dianshuZu;
 					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
 
-					if(sidaierSolutionList.isEmpty()) {
+					if (sidaierSolutionList.isEmpty()) {
 						sidaierSolutionList.add(solution);
 					} else {
 						int length = sidaierSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i).getDianShuZu();
+							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
 								sidaierSolutionList.add(i, solution);
 								break;
@@ -432,7 +459,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 				if (dianshuZu instanceof SandaierDianShuZu) {
 					SandaierDianShuZu sandaierDianShuZu = (SandaierDianShuZu) dianshuZu;
 					DianShu dianshu = sandaierDianShuZu.getSanzhangDianShuArray()[0];
-//					DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
+					// DianShu[] daipai = sandaierDianShuZu.getDaipaiDianShuArray();
 					if (dianshuCountArray[dianshu.ordinal()] == 3) { // 取只有三张牌的牌组
 						if (noWangSandaierSolutionList.isEmpty()) {
 							noWangSandaierSolutionList.add(solution);
@@ -440,8 +467,10 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							int length = noWangSandaierSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i).getDianShuZu();
-								if (tempDianshuzu.getSanzhangDianShuArray()[0].compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
+								SandaierDianShuZu tempDianshuzu = (SandaierDianShuZu) noWangSandaierSolutionList.get(i)
+										.getDianShuZu();
+								if (tempDianshuzu.getSanzhangDianShuArray()[0]
+										.compareTo(sandaierDianShuZu.getSanzhangDianShuArray()[0]) > 0) {
 									noWangSandaierSolutionList.add(i, solution);
 									break;
 								}
@@ -570,7 +599,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 
 					// 不拆炸弹
 					boolean boomFlag = false;
-					for(int i = 0; i < sanzhangArray.length; i++) {
+					for (int i = 0; i < sanzhangArray.length; i++) {
 						int dianshuIndex = sanzhangArray[i].ordinal();
 						if (dianshuCountArray[dianshuIndex] != 3) {
 							boomFlag = true;
@@ -583,7 +612,8 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							int length = noWangFeijiSolutionList.size();
 							int i = 0;
 							while (i < length) {
-								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i).getDianShuZu();
+								FeijiDianShuZu tempFeiji = (FeijiDianShuZu) noWangFeijiSolutionList.get(i)
+										.getDianShuZu();
 								// 不同类型飞机直接加入，同类型比大小
 								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
 									noWangFeijiSolutionList.add(solution);
@@ -595,8 +625,8 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 									if (i == length - 1) {
 										noWangFeijiSolutionList.add(solution);
 									}
-									i++;
 								}
+								i++;
 							}
 						}
 					}
@@ -606,12 +636,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					LianduiDianShuZu lianduiDianShuZu = (LianduiDianShuZu) dianshuZu;
 					DianShu[] lianXuDianShuArray = lianduiDianShuZu.getLianXuDianShuArray();
 					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 2) {
-							allSuccess = false;
-							break;
-						}
-					}
+					// for (DianShu dianshu : lianXuDianShuArray) {
+					// if (dianshuCountArray[dianshu.ordinal()] != 2) {
+					// allSuccess = false;
+					// break;
+					// }
+					// }
 					if (allSuccess) {
 						if (noWangLianduiSolutionList.isEmpty()) {
 							noWangLianduiSolutionList.add(solution);
@@ -638,12 +668,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					ShunziDianShuZu shunziDianShuZu = (ShunziDianShuZu) dianshuZu;
 					DianShu[] lianXuDianShuArray = shunziDianShuZu.getLianXuDianShuArray();
 					boolean allSuccess = true;
-					for (DianShu dianshu : lianXuDianShuArray) {
-						if (dianshuCountArray[dianshu.ordinal()] != 1) {
-							allSuccess = false;
-							break;
-						}
-					}
+					// for (DianShu dianshu : lianXuDianShuArray) {
+					// if (dianshuCountArray[dianshu.ordinal()] != 1) {
+					// allSuccess = false;
+					// break;
+					// }
+					// }
 					if (allSuccess) {
 						if (noWangShunziSolutionList.isEmpty()) {
 							noWangShunziSolutionList.add(solution);

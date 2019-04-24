@@ -7,16 +7,16 @@ import java.util.Map;
 import java.util.Set;
 
 import com.dml.paodekuai.pai.dianshuzu.ABoomDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
+import com.dml.paodekuai.pai.dianshuzu.PaiXing;
+import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
+import com.dml.paodekuai.player.action.da.solution.ZaDanYaPaiSolutionCalculator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DanGeZhadanDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.ZhadanComparator;
-import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
-import com.dml.paodekuai.pai.dianshuzu.PaiXing;
-import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
-import com.dml.paodekuai.player.action.da.solution.ZaDanYaPaiSolutionCalculator;
 
 public class PaodekuaiZaDanYaPaiSolutionCalculator implements ZaDanYaPaiSolutionCalculator {
 	private OptionalPlay optionalPlay;
@@ -29,15 +29,17 @@ public class PaodekuaiZaDanYaPaiSolutionCalculator implements ZaDanYaPaiSolution
 		Set<DaPaiDianShuSolution> solutionSet = new HashSet<>();
 
 		// aaa炸
-		List<ABoomDianShuZu> aBoomDianShuZus = DianShuZuCalculator
-				.calculateABoomZhadanDianShuZu(dianShuAmount);
-		for (ABoomDianShuZu aBoomDianShuZu : aBoomDianShuZus) {
-			DaPaiDianShuSolution solution = new DaPaiDianShuSolution();
-			solution.setDianShuZu(aBoomDianShuZu);
-			DianShu[] dachuDianShuArray = { aBoomDianShuZu.getDianShu(), aBoomDianShuZu.getDianShu(), aBoomDianShuZu.getDianShu()};
-			solution.setDachuDianShuArray(dachuDianShuArray);
-			solution.calculateDianshuZuheIdx();
-			solutionSet.add(solution);
+		if (optionalPlay.isaBoom()) {
+			List<ABoomDianShuZu> aBoomDianShuZus = DianShuZuCalculator.calculateABoomZhadanDianShuZu(dianShuAmount);
+			for (ABoomDianShuZu aBoomDianShuZu : aBoomDianShuZus) {
+				DaPaiDianShuSolution solution = new DaPaiDianShuSolution();
+				solution.setDianShuZu(aBoomDianShuZu);
+				DianShu[] dachuDianShuArray = { aBoomDianShuZu.getDianShu(), aBoomDianShuZu.getDianShu(),
+						aBoomDianShuZu.getDianShu() };
+				solution.setDachuDianShuArray(dachuDianShuArray);
+				solution.calculateDianshuZuheIdx();
+				solutionSet.add(solution);
+			}
 		}
 
 		// 跑的快没有王牌
