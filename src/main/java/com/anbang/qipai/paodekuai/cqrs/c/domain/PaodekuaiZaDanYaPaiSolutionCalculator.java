@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.dml.paodekuai.pai.dianshuzu.ABoomDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.DaiPaiZhaDanDianShuZu;
 import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
 import com.dml.paodekuai.pai.dianshuzu.PaiXing;
 import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
@@ -75,16 +76,44 @@ public class PaodekuaiZaDanYaPaiSolutionCalculator implements ZaDanYaPaiSolution
 	private PaiXing paiXingFilter(PaiXing paiXing, DianShuZu beiYaDianShuZu) {
 		PaiXing filtedPaiXing = new PaiXing();
 		if (beiYaDianShuZu instanceof ZhadanDianShuZu) {
-			ZhadanDianShuZu beiYaZhadanDianShuZu = (ZhadanDianShuZu) beiYaDianShuZu;
-			List<DanGeZhadanDianShuZu> filtedDanGeZhadanDianShuZuList = filtedPaiXing.getDanGeZhadanDianShuZuList();
-			List<DanGeZhadanDianShuZu> zhadanDianShuZuList = paiXing.getDanGeZhadanDianShuZuList();
-			for (DanGeZhadanDianShuZu danGeZhadanDianShuZu : zhadanDianShuZuList) {
-				if (zhadanComparator.compare(danGeZhadanDianShuZu, beiYaZhadanDianShuZu) > 0) {
-					filtedDanGeZhadanDianShuZuList.add(danGeZhadanDianShuZu);
+			if (beiYaDianShuZu instanceof DaiPaiZhaDanDianShuZu) {
+				DaiPaiZhaDanDianShuZu beiYaZhadanDianShuZu = (DaiPaiZhaDanDianShuZu) beiYaDianShuZu;
+				List<DanGeZhadanDianShuZu> filtedDanGeZhadanDianShuZuList = filtedPaiXing.getDanGeZhadanDianShuZuList();
+				List<DanGeZhadanDianShuZu> zhadanDianShuZuList = paiXing.getDanGeZhadanDianShuZuList();
+				for (DanGeZhadanDianShuZu danGeZhadanDianShuZu : zhadanDianShuZuList) {
+					if (zhadanComparator.compare(danGeZhadanDianShuZu, beiYaZhadanDianShuZu) > 0) {
+						filtedDanGeZhadanDianShuZuList.add(danGeZhadanDianShuZu);
+					}
+				}
+				List<DaiPaiZhaDanDianShuZu> filtedDaipaiZhaDanDianShuZuList = filtedPaiXing
+						.getDaipaiZhaDanDianShuZuList();
+				List<DaiPaiZhaDanDianShuZu> daipaiZhaDanDianShuZuList = paiXing.getDaipaiZhaDanDianShuZuList();
+				for (DaiPaiZhaDanDianShuZu daiPaiZhaDanDianShuZu : daipaiZhaDanDianShuZuList) {
+					if (zhadanComparator.compare(daiPaiZhaDanDianShuZu, beiYaZhadanDianShuZu) > 0) {
+						filtedDaipaiZhaDanDianShuZuList.add(daiPaiZhaDanDianShuZu);
+					}
+				}
+			} else {
+				ZhadanDianShuZu beiYaZhadanDianShuZu = (ZhadanDianShuZu) beiYaDianShuZu;
+				List<DanGeZhadanDianShuZu> filtedDanGeZhadanDianShuZuList = filtedPaiXing.getDanGeZhadanDianShuZuList();
+				List<DanGeZhadanDianShuZu> zhadanDianShuZuList = paiXing.getDanGeZhadanDianShuZuList();
+				for (DanGeZhadanDianShuZu danGeZhadanDianShuZu : zhadanDianShuZuList) {
+					if (zhadanComparator.compare(danGeZhadanDianShuZu, beiYaZhadanDianShuZu) > 0) {
+						filtedDanGeZhadanDianShuZuList.add(danGeZhadanDianShuZu);
+					}
+				}
+				List<DaiPaiZhaDanDianShuZu> filtedDaipaiZhaDanDianShuZuList = filtedPaiXing
+						.getDaipaiZhaDanDianShuZuList();
+				List<DaiPaiZhaDanDianShuZu> daipaiZhaDanDianShuZuList = paiXing.getDaipaiZhaDanDianShuZuList();
+				for (DaiPaiZhaDanDianShuZu daiPaiZhaDanDianShuZu : daipaiZhaDanDianShuZuList) {
+					if (zhadanComparator.compare(daiPaiZhaDanDianShuZu, beiYaZhadanDianShuZu) > 0) {
+						filtedDaipaiZhaDanDianShuZuList.add(daiPaiZhaDanDianShuZu);
+					}
 				}
 			}
 		} else {
 			filtedPaiXing.setDanGeZhadanDianShuZuList(paiXing.getDanGeZhadanDianShuZuList());
+			filtedPaiXing.setDaipaiZhaDanDianShuZuList(paiXing.getDaipaiZhaDanDianShuZuList());
 		}
 		return filtedPaiXing;
 	}

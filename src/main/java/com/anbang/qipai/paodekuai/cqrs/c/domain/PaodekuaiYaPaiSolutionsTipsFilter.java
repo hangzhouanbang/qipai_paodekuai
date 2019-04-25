@@ -62,7 +62,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 						for (int i = 0; i < length; i++) {
 							DanGeZhadanDianShuZu danGeZhadanDianShuZu2 = (DanGeZhadanDianShuZu) danGeZhadanSolutionList
 									.get(i).getDianShuZu();
-							int compare = danGeZhadanDianShuZu2.getDianShu().compareTo(dianshu);
+							DianShu ds = danGeZhadanDianShuZu2.getDianShu();
+							if (danGeZhadanDianShuZu2 instanceof DaiPaiZhaDanDianShuZu) {
+								DaiPaiZhaDanDianShuZu danGeZhadanDianShuZu3 = (DaiPaiZhaDanDianShuZu) danGeZhadanDianShuZu2;
+								ds = danGeZhadanDianShuZu3.getZhadanDian();
+							}
+							int compare = ds.compareTo(dianshu);
 							if (compare > 0) {
 								danGeZhadanSolutionList.add(i, solution);
 								break;
@@ -83,7 +88,12 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							for (int i = 0; i < length; i++) {
 								DanGeZhadanDianShuZu danGeZhadanDianShuZu2 = (DanGeZhadanDianShuZu) danGeZhadanSolutionList
 										.get(i).getDianShuZu();
-								int compare = danGeZhadanDianShuZu2.getDianShu().compareTo(dianshu);
+								DianShu ds = danGeZhadanDianShuZu2.getDianShu();
+								if (danGeZhadanDianShuZu2 instanceof DaiPaiZhaDanDianShuZu) {
+									DaiPaiZhaDanDianShuZu danGeZhadanDianShuZu3 = (DaiPaiZhaDanDianShuZu) danGeZhadanDianShuZu2;
+									ds = danGeZhadanDianShuZu3.getZhadanDian();
+								}
+								int compare = ds.compareTo(dianshu);
 								if (compare > 0) {
 									danGeZhadanSolutionList.add(i, solution);
 									break;
@@ -163,7 +173,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 								break;
 							}
 							if (i == length - 1) {
-								noWangSandaierSolutionList.add(solution);
+								sidaierSolutionList.add(solution);
 							}
 							i++;
 						}
@@ -175,20 +185,20 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
 
-					if (sidaierSolutionList.isEmpty()) {
-						sidaierSolutionList.add(solution);
+					if (sidaisanSolutionList.isEmpty()) {
+						sidaisanSolutionList.add(solution);
 					} else {
-						int length = sidaierSolutionList.size();
+						int length = sidaisanSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+							SidaisanDianShuZu tempDianshuzu = (SidaisanDianShuZu) sidaisanSolutionList.get(i)
 									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
-								sidaierSolutionList.add(i, solution);
+								sidaisanSolutionList.add(i, solution);
 								break;
 							}
 							if (i == length - 1) {
-								noWangSandaierSolutionList.add(solution);
+								sidaisanSolutionList.add(solution);
 							}
 							i++;
 						}
@@ -297,6 +307,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 								// 不同类型飞机直接加入，同类型比大小
 								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
 									noWangFeijiSolutionList.add(solution);
+									break;
 								} else {
 									if (tempFeiji.getSanzhangDianShuArray()[0].compareTo(sanzhangArray[0]) > 0) {
 										noWangFeijiSolutionList.add(i, solution);
@@ -305,8 +316,8 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 									if (i == length - 1) {
 										noWangFeijiSolutionList.add(solution);
 									}
-									i++;
 								}
+								i++;
 							}
 						}
 					}
@@ -424,7 +435,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 								break;
 							}
 							if (i == length - 1) {
-								noWangSandaierSolutionList.add(solution);
+								sidaierSolutionList.add(solution);
 							}
 							i++;
 						}
@@ -436,20 +447,20 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 					DianShu dianShu = sidaisanDianShuZu.getDanpaiDianShu();
 					DianShu[] dianpaiArray = sidaisanDianShuZu.getDaipaiDianShuArray();
 
-					if (sidaierSolutionList.isEmpty()) {
-						sidaierSolutionList.add(solution);
+					if (sidaisanSolutionList.isEmpty()) {
+						sidaisanSolutionList.add(solution);
 					} else {
-						int length = sidaierSolutionList.size();
+						int length = sidaisanSolutionList.size();
 						int i = 0;
 						while (i < length) {
-							SidaierDianShuZu tempDianshuzu = (SidaierDianShuZu) sidaierSolutionList.get(i)
+							SidaisanDianShuZu tempDianshuzu = (SidaisanDianShuZu) sidaisanSolutionList.get(i)
 									.getDianShuZu();
 							if (tempDianshuzu.getDanpaiDianShu().compareTo(dianShu) > 0) {
-								sidaierSolutionList.add(i, solution);
+								sidaisanSolutionList.add(i, solution);
 								break;
 							}
 							if (i == length - 1) {
-								noWangSandaierSolutionList.add(solution);
+								sidaisanSolutionList.add(solution);
 							}
 							i++;
 						}
@@ -617,6 +628,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 								// 不同类型飞机直接加入，同类型比大小
 								if (sanzhangArray.length != tempFeiji.getDaipaiDianShuArray().length) {
 									noWangFeijiSolutionList.add(solution);
+									break;
 								} else {
 									if (tempFeiji.getSanzhangDianShuArray()[0].compareTo(sanzhangArray[0]) > 0) {
 										noWangFeijiSolutionList.add(i, solution);

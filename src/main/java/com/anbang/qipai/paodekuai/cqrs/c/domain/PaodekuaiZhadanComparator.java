@@ -2,7 +2,6 @@ package com.anbang.qipai.paodekuai.cqrs.c.domain;
 
 import com.dml.paodekuai.pai.dianshuzu.ABoomDianShuZu;
 import com.dml.paodekuai.pai.dianshuzu.DaiPaiZhaDanDianShuZu;
-import com.dml.paodekuai.preparedapai.lipai.DianshuOrPaishuShoupaiSortStrategy;
 import com.dml.puke.pai.DianShu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DanGeZhadanDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
@@ -26,15 +25,16 @@ public class PaodekuaiZhadanComparator implements ZhadanComparator {
 		return dianShu1.compareTo(dianshu2);
 	}
 
-	private static DianShu getDianShu (ZhadanDianShuZu zhadanDianShuZu) {
+	private static DianShu getDianShu(ZhadanDianShuZu zhadanDianShuZu) {
 		DianShu dianShu = null;
-		if (zhadanDianShuZu instanceof DanGeZhadanDianShuZu) {
-			DanGeZhadanDianShuZu danGeZhadan = (DanGeZhadanDianShuZu) zhadanDianShuZu;
-			dianShu = danGeZhadan.getDianShu();
-		}
 		if (zhadanDianShuZu instanceof DaiPaiZhaDanDianShuZu) {
 			DaiPaiZhaDanDianShuZu daipaiDian = (DaiPaiZhaDanDianShuZu) zhadanDianShuZu;
 			dianShu = daipaiDian.getZhadanDian();
+			return dianShu;
+		}
+		if (zhadanDianShuZu instanceof DanGeZhadanDianShuZu) {
+			DanGeZhadanDianShuZu danGeZhadan = (DanGeZhadanDianShuZu) zhadanDianShuZu;
+			dianShu = danGeZhadan.getDianShu();
 		}
 		return dianShu;
 	}
