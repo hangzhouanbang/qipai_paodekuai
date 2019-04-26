@@ -1,17 +1,33 @@
 package com.anbang.qipai.paodekuai.cqrs.c.domain;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.dml.paodekuai.pai.dianshuzu.*;
+import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
+import com.dml.paodekuai.pai.dianshuzu.FeijiDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.PaiXing;
+import com.dml.paodekuai.pai.dianshuzu.PaodekuaiDianShuZuGenerator;
+import com.dml.paodekuai.pai.dianshuzu.SandaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SidaierDianShuZu;
+import com.dml.paodekuai.pai.dianshuzu.SidaisanDianShuZu;
 import com.dml.paodekuai.pai.dianshuzu.comparator.DaipaiComparator;
+import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
+import com.dml.paodekuai.player.action.da.solution.DianShuZuYaPaiSolutionCalculator;
 import com.dml.paodekuai.wanfa.OptionalPlay;
 import com.dml.puke.pai.DianShu;
-import com.dml.puke.wanfa.dianshu.dianshuzu.*;
+import com.dml.puke.wanfa.dianshu.dianshuzu.DanzhangDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.DuiziDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.LianXuDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.LianduiDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.SanzhangDianShuZu;
+import com.dml.puke.wanfa.dianshu.dianshuzu.ShunziDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.CanNotCompareException;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.DanGeDianShuZuComparator;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.LianXuDianShuZuComparator;
-import com.dml.paodekuai.player.action.da.solution.DaPaiDianShuSolution;
-import com.dml.paodekuai.player.action.da.solution.DianShuZuYaPaiSolutionCalculator;
 
 public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPaiSolutionCalculator {
 	private OptionalPlay optionalPlay;
@@ -20,7 +36,8 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 	private DaipaiComparator daipaiComparator;
 
 	@Override
-	public Map<String, DaPaiDianShuSolution> calculate(DianShuZu beiYaDianShuZu, int[] dianShuAmountArray, boolean baodan) {
+	public Map<String, DaPaiDianShuSolution> calculate(DianShuZu beiYaDianShuZu, int[] dianShuAmountArray,
+			boolean baodan) {
 		int[] dianShuAmount = dianShuAmountArray.clone();
 		Map<String, DaPaiDianShuSolution> yaPaiSolutionCandidates = new HashMap<>();
 		Set<DaPaiDianShuSolution> solutionSet = new HashSet<>();
@@ -90,9 +107,9 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 
 	private void calculateDaPaiDianShuSolutionWithoutWangDang(int[] dianshuCountArray, DianShuZu beiYaDianShuZu,
 			Set<DaPaiDianShuSolution> solutionSet) {
-		//计算剩余手牌数
+		// 计算剩余手牌数
 		int shoupaiCount = 0;
-		for (int i = 0; i< 13; i ++) {
+		for (int i = 0; i < 13; i++) {
 			shoupaiCount = shoupaiCount + dianshuCountArray[i];
 		}
 
@@ -136,9 +153,10 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 		solutionSet.addAll(DianShuZuCalculator.calculateAllDaPaiDianShuSolutionWithoutWangDang(paiXing));
 	}
 
-	//牌型比较
+	// 牌型比较
 	private PaiXing paiXingFilter(PaiXing paiXing, DianShuZu beiYaDianShuZu) {
 		PaiXing filtedPaiXing = new PaiXing();
+		// 对子
 		if (beiYaDianShuZu instanceof DuiziDianShuZu) {
 			DuiziDianShuZu beiYaDuiziDianShuZu = (DuiziDianShuZu) beiYaDianShuZu;
 			List<DuiziDianShuZu> filtedDuiziDianShuZuList = filtedPaiXing.getDuiziDianShuZuList();
@@ -154,6 +172,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 			}
 			return filtedPaiXing;
 		}
+		// 顺子
 		if (beiYaDianShuZu instanceof ShunziDianShuZu) {
 			ShunziDianShuZu beiYaShunziDianShuZu = (ShunziDianShuZu) beiYaDianShuZu;
 			List<ShunziDianShuZu> filtedShunziDianShuZu = filtedPaiXing.getShunziDianShuZuList();
@@ -169,6 +188,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 			}
 			return filtedPaiXing;
 		}
+		// 连对
 		if (beiYaDianShuZu instanceof LianduiDianShuZu) {
 			LianduiDianShuZu beiYaLianduiDianShuZu = (LianduiDianShuZu) beiYaDianShuZu;
 			List<LianduiDianShuZu> filtedLianduiDianShuZu = filtedPaiXing.getLianduiDianShuZuList();
@@ -184,6 +204,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 			}
 			return filtedPaiXing;
 		}
+		// 三带二
 		if (beiYaDianShuZu instanceof SandaierDianShuZu) {
 			SandaierDianShuZu beiYaSanzhangDianShuZu = (SandaierDianShuZu) beiYaDianShuZu;
 			List<SandaierDianShuZu> filtedSanzhangDianShuZu = filtedPaiXing.getSandaierDianShuZuArrayList();
@@ -199,6 +220,7 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 			}
 			return filtedPaiXing;
 		}
+		// 飞机
 		if (beiYaDianShuZu instanceof FeijiDianShuZu) {
 			FeijiDianShuZu beiYaLiansanzhangDianShuZu = (FeijiDianShuZu) beiYaDianShuZu;
 			List<FeijiDianShuZu> filtedLiansanzhangDianShuZu = filtedPaiXing.getFeijiDianShuZuArrayList();
@@ -210,6 +232,46 @@ public class PaodekuaiDianShuZuYaPaiSolutionCalculator implements DianShuZuYaPai
 					}
 				} catch (CanNotCompareException e) {
 
+				}
+			}
+			return filtedPaiXing;
+		}
+		// 三张
+		if (beiYaDianShuZu instanceof SanzhangDianShuZu) {
+			SanzhangDianShuZu beiYaSanzhangDianShuZu = (SanzhangDianShuZu) beiYaDianShuZu;
+			List<SanzhangDianShuZu> filtedSanzhangDianShuZu = filtedPaiXing.getSanzhangDianShuList();
+			List<SanzhangDianShuZu> sanzhangDianShuZuList = paiXing.getSanzhangDianShuList();
+			for (SanzhangDianShuZu sanzhangDianShuZu : sanzhangDianShuZuList) {
+				try {
+					if (danGeDianShuZuComparator.compare(sanzhangDianShuZu, beiYaSanzhangDianShuZu) > 0) {
+						filtedSanzhangDianShuZu.add(sanzhangDianShuZu);
+					}
+				} catch (CanNotCompareException e) {
+
+				}
+			}
+			return filtedPaiXing;
+		}
+		// 四带二
+		if (beiYaDianShuZu instanceof SidaierDianShuZu) {
+			SidaierDianShuZu beiYaSidaierDianShuZu = (SidaierDianShuZu) beiYaDianShuZu;
+			List<SidaierDianShuZu> filtedSidaierDianShuZu = filtedPaiXing.getSidaierDianShuZulist();
+			List<SidaierDianShuZu> sidaierDianShuZuList = paiXing.getSidaierDianShuZulist();
+			for (SidaierDianShuZu sidaierDianShuZu : sidaierDianShuZuList) {
+				if (sidaierDianShuZu.getDanpaiDianShu().compareTo(beiYaSidaierDianShuZu.getDanpaiDianShu()) > 0) {
+					filtedSidaierDianShuZu.add(sidaierDianShuZu);
+				}
+			}
+			return filtedPaiXing;
+		}
+		// 四带三
+		if (beiYaDianShuZu instanceof SidaisanDianShuZu) {
+			SidaisanDianShuZu beiYaSidaisanDianShuZu = (SidaisanDianShuZu) beiYaDianShuZu;
+			List<SidaisanDianShuZu> filtedSidaisanDianShuZu = filtedPaiXing.getSidaisanDianShuZuList();
+			List<SidaisanDianShuZu> sidaisanDianShuZuList = paiXing.getSidaisanDianShuZuList();
+			for (SidaisanDianShuZu sidaisanDianShuZu : sidaisanDianShuZuList) {
+				if (sidaisanDianShuZu.getDanpaiDianShu().compareTo(beiYaSidaisanDianShuZu.getDanpaiDianShu()) > 0) {
+					filtedSidaisanDianShuZu.add(sidaisanDianShuZu);
 				}
 			}
 			return filtedPaiXing;
