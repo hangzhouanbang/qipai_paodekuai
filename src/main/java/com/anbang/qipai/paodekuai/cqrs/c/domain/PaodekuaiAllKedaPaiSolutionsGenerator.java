@@ -7,10 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.dml.paodekuai.pai.dianshuzu.ABoomDianShuZu;
 import com.dml.paodekuai.pai.dianshuzu.DianShuZuCalculator;
 import com.dml.paodekuai.pai.dianshuzu.PaiXing;
@@ -24,6 +21,7 @@ import com.dml.puke.pai.PukePai;
 import com.dml.puke.pai.PukePaiMian;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DanzhangDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.DianShuZuGenerator;
+import com.dml.puke.wanfa.dianshu.dianshuzu.ZhadanDianShuZu;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.LianXuDianShuZuComparator;
 import com.dml.puke.wanfa.dianshu.dianshuzu.comparator.ZhadanComparator;
 
@@ -35,8 +33,6 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
 	private LianXuDianShuZuComparator lianXuDianShuZuComparator;
 
 	private DaipaiComparator daipaiComparator;
-
-	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public Map<String, DaPaiDianShuSolution> generateAllKedaPaiSolutions(Map<Integer, PukePai> allShoupai,
@@ -80,12 +76,19 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
 
 		solutionSet.forEach((solution) -> {
 			DaPaiDianShuSolution daPaiDianShuSolution = yaPaiSolutionCandidates.get(solution.getDianshuZuheIdx());
-			// TODO: 2019/3/12
-			// 跑的快这里不考虑癞子玩法时会出现点数相同类型不同的情况
-			yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
+			if (solution.getDianShuZu() instanceof ZhadanDianShuZu) {// 炸弹最大
+				if (daPaiDianShuSolution != null && daPaiDianShuSolution.getDianShuZu() instanceof ZhadanDianShuZu) {
+
+				} else {
+					yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
+				}
+			} else {
+				// TODO: 2019/3/12
+				// 跑的快这里不考虑癞子玩法时会出现点数相同类型不同的情况
+				yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
+			}
 		});
 
-		logger.debug(JSON.toJSONString(yaPaiSolutionCandidates));
 		return yaPaiSolutionCandidates;
 	}
 
