@@ -77,15 +77,11 @@ public class PaodekuaiAllKedaPaiSolutionsGenerator implements AllKedaPaiSolution
 		solutionSet.forEach((solution) -> {
 			DaPaiDianShuSolution daPaiDianShuSolution = yaPaiSolutionCandidates.get(solution.getDianshuZuheIdx());
 			if (solution.getDianShuZu() instanceof ZhadanDianShuZu) {// 炸弹最大
-				if (daPaiDianShuSolution != null && daPaiDianShuSolution.getDianShuZu() instanceof ZhadanDianShuZu) {
-
-				} else {
+				yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
+			} else {
+				if (daPaiDianShuSolution == null) {
 					yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
 				}
-			} else {
-				// TODO: 2019/3/12
-				// 跑的快这里不考虑癞子玩法时会出现点数相同类型不同的情况
-				yaPaiSolutionCandidates.put(solution.getDianshuZuheIdx(), solution);
 			}
 		});
 
