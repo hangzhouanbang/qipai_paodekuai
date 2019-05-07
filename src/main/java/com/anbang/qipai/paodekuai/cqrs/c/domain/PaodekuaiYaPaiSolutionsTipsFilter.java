@@ -71,6 +71,19 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 							if (compare > 0) {
 								danGeZhadanSolutionList.add(i, solution);
 								break;
+							} else if (compare == 0) {
+								DianShu danpai = danGeZhadanDianShuZu1.getDaipaiDian();
+								DianShu dp = null;
+								if (danGeZhadanDianShuZu2 instanceof DaiPaiZhaDanDianShuZu) {
+									DaiPaiZhaDanDianShuZu danGeZhadanDianShuZu3 = (DaiPaiZhaDanDianShuZu) danGeZhadanDianShuZu2;
+									dp = danGeZhadanDianShuZu3.getDaipaiDian();
+								}
+								if (dp != null) {
+									if (dp.compareTo(danpai) > 0) {
+										danGeZhadanSolutionList.add(i, solution);
+										break;
+									}
+								}
 							}
 							if (i == length - 1) {
 								danGeZhadanSolutionList.add(solution);
@@ -94,7 +107,7 @@ public class PaodekuaiYaPaiSolutionsTipsFilter implements YaPaiSolutionsTipsFilt
 									ds = danGeZhadanDianShuZu3.getZhadanDian();
 								}
 								int compare = ds.compareTo(dianshu);
-								if (compare > 0) {
+								if (compare >= 0) {
 									danGeZhadanSolutionList.add(i, solution);
 									break;
 								}
